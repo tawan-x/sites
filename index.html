@@ -240,7 +240,6 @@
     const SITE_ROOT = "https://tawan-x.github.io/sites/";
 
     const fallbackFiles = [
-      { path: "index.html", type: "blob", size: 0 },
       { path: "OIC-AI-Governance-Security-Session.html", type: "blob", size: 0 }
     ];
 
@@ -266,12 +265,10 @@
     }
 
     function displayName(path) {
-      if (path === "index.html") return "Home page (index.html)";
       return path.split("/").pop().replace(/[-_]+/g, " ").replace(/\.[^.]+$/, "");
     }
 
     function fileUrl(path) {
-      if (path === "index.html") return SITE_ROOT;
       return SITE_ROOT + path.split("/").map(encodeURIComponent).join("/");
     }
 
@@ -316,7 +313,7 @@
         if (!response.ok) throw new Error(`GitHub API ${response.status}`);
         const data = await response.json();
         files = data.tree
-          .filter(item => item.type === "blob" && !item.path.startsWith("."))
+          .filter(item => item.type === "blob" && !item.path.startsWith(".") && !/(^|\/)index\.html$/i.test(item.path))
           .sort((a, b) => a.path.localeCompare(b.path, "en", { numeric: true }));
         status.textContent = `${files.length.toLocaleString("en-US")} files found in the latest GitHub listing`;
         updatedAt.textContent = `Updated ${new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
