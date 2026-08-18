@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="th">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="รวมไฟล์ทั้งหมดที่เผยแพร่บน tawan-x.github.io/sites">
+  <meta name="description" content="Browse all files published on tawan-x.github.io/sites">
   <meta name="color-scheme" content="light">
   <title>Sites — Tawan X</title>
   <style>
@@ -203,34 +203,34 @@
 <body>
   <header class="shell topbar">
     <div class="brand"><span class="brand-mark">TX</span><span>Tawan X / Sites</span></div>
-    <a class="source-link" href="https://github.com/tawan-x/sites" target="_blank" rel="noopener">ดูคลังต้นฉบับบน GitHub ↗</a>
+    <a class="source-link" href="https://github.com/tawan-x/sites" target="_blank" rel="noopener">View source on GitHub ↗</a>
   </header>
 
   <main>
     <section class="shell hero" aria-labelledby="page-title">
       <p class="eyebrow">Public file directory</p>
-      <h1 id="page-title">ไฟล์ทั้งหมด<br>ในที่เดียว</h1>
+      <h1 id="page-title">Every file.<br>One place.</h1>
       <div class="hero-copy">
-        <p>เลือกเปิดงานที่เผยแพร่บนเว็บไซต์นี้ รายการจะซิงก์กับคลัง <strong>tawan-x/sites</strong> โดยอัตโนมัติ</p>
+        <p>Browse everything published on this site. The directory automatically stays in sync with the <strong>tawan-x/sites</strong> repository.</p>
         <div class="count-block" aria-live="polite"><span class="count" id="fileCount">—</span><span class="count-label">Files available</span></div>
       </div>
     </section>
 
-    <section class="shell library" aria-label="รายการไฟล์">
+    <section class="shell library" aria-label="File directory">
       <div class="toolbar">
         <label class="search-wrap">
-          <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">ค้นหาไฟล์</span>
-          <input class="search" id="search" type="search" placeholder="ค้นหาจากชื่อไฟล์หรือโฟลเดอร์…" autocomplete="off">
+          <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Search files</span>
+          <input class="search" id="search" type="search" placeholder="Search by file or folder name…" autocomplete="off">
         </label>
-        <button class="refresh" id="refresh" type="button">อัปเดตรายการ</button>
+        <button class="refresh" id="refresh" type="button">Refresh</button>
       </div>
-      <p class="status" id="status" role="status">กำลังโหลดรายการล่าสุด…</p>
+      <p class="status" id="status" role="status">Loading the latest files…</p>
       <div class="file-list" id="fileList" aria-live="polite"></div>
     </section>
   </main>
 
   <footer>
-    <div class="shell"><span>tawan-x.github.io/sites</span><span id="updatedAt">อัปเดตรายการเมื่อเปิดหน้านี้</span></div>
+    <div class="shell"><span>tawan-x.github.io/sites</span><span id="updatedAt">Updated when this page was opened</span></div>
   </footer>
 
   <script>
@@ -259,14 +259,14 @@
     }
 
     function readableSize(bytes) {
-      if (!bytes) return "ขนาดไม่ระบุ";
+      if (!bytes) return "Size unavailable";
       if (bytes < 1024) return `${bytes} B`;
       if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
       return `${(bytes / 1048576).toFixed(1)} MB`;
     }
 
     function displayName(path) {
-      if (path === "index.html") return "หน้าหลัก (index.html)";
+      if (path === "index.html") return "Home page (index.html)";
       return path.split("/").pop().replace(/[-_]+/g, " ").replace(/\.[^.]+$/, "");
     }
 
@@ -276,12 +276,12 @@
     }
 
     function render() {
-      const query = search.value.trim().toLocaleLowerCase("th");
-      const visible = files.filter(file => file.path.toLocaleLowerCase("th").includes(query));
-      fileCount.textContent = files.length.toLocaleString("th-TH");
+      const query = search.value.trim().toLocaleLowerCase("en");
+      const visible = files.filter(file => file.path.toLocaleLowerCase("en").includes(query));
+      fileCount.textContent = files.length.toLocaleString("en-US");
 
       if (!visible.length) {
-        fileList.innerHTML = `<div class="empty">ไม่พบไฟล์ที่ตรงกับ “${escapeHtml(search.value)}”</div>`;
+        fileList.innerHTML = `<div class="empty">No files match “${escapeHtml(search.value)}”</div>`;
         return;
       }
 
@@ -289,7 +289,7 @@
         const path = escapeHtml(file.path);
         const name = escapeHtml(displayName(file.path));
         const url = fileUrl(file.path);
-        const folder = file.path.includes("/") ? file.path.slice(0, file.path.lastIndexOf("/")) : "โฟลเดอร์หลัก";
+        const folder = file.path.includes("/") ? file.path.slice(0, file.path.lastIndexOf("/")) : "Root folder";
         return `
           <article class="file-card">
             <div class="file-icon" aria-hidden="true">${escapeHtml(extension(file.path))}</div>
@@ -297,7 +297,7 @@
               <h2 class="file-name">${name}</h2>
               <div class="file-meta"><span class="file-path">${path}</span><span>${escapeHtml(folder)}</span><span>${readableSize(file.size)}</span></div>
             </div>
-            <a class="open-link" href="${url}" target="_blank" rel="noopener">เปิดไฟล์ ↗</a>
+            <a class="open-link" href="${url}" target="_blank" rel="noopener">Open file ↗</a>
           </article>`;
       }).join("");
     }
@@ -310,19 +310,19 @@
 
     async function loadFiles() {
       refresh.disabled = true;
-      status.textContent = "กำลังโหลดรายการล่าสุด…";
+      status.textContent = "Loading the latest files…";
       try {
         const response = await fetch(API_URL, { headers: { Accept: "application/vnd.github+json" } });
         if (!response.ok) throw new Error(`GitHub API ${response.status}`);
         const data = await response.json();
         files = data.tree
           .filter(item => item.type === "blob" && !item.path.startsWith("."))
-          .sort((a, b) => a.path.localeCompare(b.path, "th", { numeric: true }));
-        status.textContent = `พบ ${files.length.toLocaleString("th-TH")} ไฟล์จากรายการล่าสุดบน GitHub`;
-        updatedAt.textContent = `อัปเดต ${new Intl.DateTimeFormat("th-TH", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
+          .sort((a, b) => a.path.localeCompare(b.path, "en", { numeric: true }));
+        status.textContent = `${files.length.toLocaleString("en-US")} files found in the latest GitHub listing`;
+        updatedAt.textContent = `Updated ${new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
       } catch (error) {
         files = fallbackFiles;
-        status.textContent = "แสดงรายการสำรองล่าสุด — ไม่สามารถเชื่อมต่อ GitHub ได้ในขณะนี้";
+        status.textContent = "Showing the latest fallback list — GitHub is currently unavailable";
       } finally {
         refresh.disabled = false;
         render();
