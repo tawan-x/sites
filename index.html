@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="รวมไฟล์ทั้งหมดที่เผยแพร่บน tawan-x.github.io/sites">
+  <meta name="color-scheme" content="light">
+  <title>Sites — Tawan X</title>
+  <style>
+    :root {
+      --ink: #10251f;
+      --muted: #66766f;
+      --paper: #fffdf8;
+      --canvas: #f3f1e9;
+      --line: #dcd9cc;
+      --accent: #ed6b3a;
+      --accent-soft: #ffebe1;
+      --green: #1e6f5c;
+      --green-soft: #e3f0eb;
+      --shadow: 0 18px 50px rgba(31, 49, 42, .09);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(237, 107, 58, .12), transparent 28rem),
+        var(--canvas);
+      font-family: Inter, "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+      line-height: 1.55;
+    }
+
+    button, input { font: inherit; }
+    a { color: inherit; }
+    .shell { width: min(1120px, calc(100% - 36px)); margin: 0 auto; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 24px 0;
+      border-bottom: 1px solid rgba(16, 37, 31, .13);
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 850; letter-spacing: -.02em; }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      color: white;
+      background: var(--ink);
+      font-size: 12px;
+      letter-spacing: .08em;
+    }
+    .source-link { color: var(--muted); font-size: 14px; text-underline-offset: 4px; }
+    .source-link:hover { color: var(--accent); }
+
+    .hero { padding: clamp(64px, 10vw, 122px) 0 52px; }
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    h1 {
+      max-width: 850px;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(52px, 9.2vw, 108px);
+      font-weight: 500;
+      letter-spacing: -.065em;
+      line-height: .93;
+    }
+    .hero-copy {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 36px;
+      margin-top: 34px;
+    }
+    .hero-copy p { max-width: 650px; margin: 0; color: var(--muted); font-size: clamp(17px, 2vw, 21px); }
+    .count-block { flex: 0 0 auto; text-align: right; }
+    .count { display: block; font-family: Georgia, serif; font-size: 46px; line-height: 1; }
+    .count-label { color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+
+    .library { padding: 12px 0 88px; }
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .search-wrap { position: relative; }
+    .search-wrap::before { content: "⌕"; position: absolute; left: 18px; top: 50%; transform: translateY(-52%); color: var(--muted); font-size: 23px; }
+    .search {
+      width: 100%;
+      min-height: 54px;
+      padding: 0 18px 0 50px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      outline: none;
+      color: var(--ink);
+      background: rgba(255, 253, 248, .78);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .search:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(237, 107, 58, .12); }
+    .search::placeholder { color: #8d9893; }
+    .refresh {
+      min-height: 54px;
+      padding: 0 19px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      cursor: pointer;
+      color: var(--ink);
+      background: var(--paper);
+      font-weight: 800;
+    }
+    .refresh:hover { border-color: var(--ink); }
+    .refresh:disabled { cursor: wait; opacity: .55; }
+
+    .status { min-height: 24px; margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+    .file-list { display: grid; gap: 12px; }
+    .file-card {
+      display: grid;
+      grid-template-columns: 50px minmax(0, 1fr) auto;
+      gap: 17px;
+      align-items: center;
+      min-height: 92px;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      background: var(--paper);
+      box-shadow: 0 2px 0 rgba(16, 37, 31, .02);
+      transition: transform .2s, box-shadow .2s, border-color .2s;
+    }
+    .file-card:hover { transform: translateY(-2px); border-color: #c6c1af; box-shadow: var(--shadow); }
+    .file-icon {
+      display: grid;
+      place-items: center;
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      color: var(--green);
+      background: var(--green-soft);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .file-main { min-width: 0; }
+    .file-name { margin: 0; overflow-wrap: anywhere; font-size: 17px; font-weight: 850; letter-spacing: -.015em; }
+    .file-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 4px; color: var(--muted); font-size: 12px; }
+    .file-path { overflow-wrap: anywhere; }
+    .open-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      color: white;
+      background: var(--ink);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+    .open-link:hover { background: var(--accent); }
+    .empty { padding: 44px 20px; border: 1px dashed #bbb6a5; border-radius: 19px; color: var(--muted); text-align: center; }
+
+    footer { padding: 24px 0 34px; border-top: 1px solid rgba(16, 37, 31, .13); color: var(--muted); font-size: 12px; }
+    footer .shell { display: flex; justify-content: space-between; gap: 20px; }
+
+    @media (max-width: 680px) {
+      .shell { width: min(100% - 24px, 1120px); }
+      .topbar { padding: 16px 0; }
+      .source-link { font-size: 0; }
+      .source-link::after { content: "GitHub ↗"; font-size: 13px; }
+      .hero { padding-top: 58px; }
+      .hero-copy { display: block; }
+      .count-block { margin-top: 28px; text-align: left; }
+      .toolbar { grid-template-columns: 1fr; }
+      .file-card { grid-template-columns: 44px minmax(0, 1fr); padding: 16px; }
+      .file-icon { width: 44px; height: 44px; }
+      .open-link { grid-column: 1 / -1; }
+      footer .shell { display: block; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="shell topbar">
+    <div class="brand"><span class="brand-mark">TX</span><span>Tawan X / Sites</span></div>
+    <a class="source-link" href="https://github.com/tawan-x/sites" target="_blank" rel="noopener">ดูคลังต้นฉบับบน GitHub ↗</a>
+  </header>
+
+  <main>
+    <section class="shell hero" aria-labelledby="page-title">
+      <p class="eyebrow">Public file directory</p>
+      <h1 id="page-title">ไฟล์ทั้งหมด<br>ในที่เดียว</h1>
+      <div class="hero-copy">
+        <p>เลือกเปิดงานที่เผยแพร่บนเว็บไซต์นี้ รายการจะซิงก์กับคลัง <strong>tawan-x/sites</strong> โดยอัตโนมัติ</p>
+        <div class="count-block" aria-live="polite"><span class="count" id="fileCount">—</span><span class="count-label">Files available</span></div>
+      </div>
+    </section>
+
+    <section class="shell library" aria-label="รายการไฟล์">
+      <div class="toolbar">
+        <label class="search-wrap">
+          <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">ค้นหาไฟล์</span>
+          <input class="search" id="search" type="search" placeholder="ค้นหาจากชื่อไฟล์หรือโฟลเดอร์…" autocomplete="off">
+        </label>
+        <button class="refresh" id="refresh" type="button">อัปเดตรายการ</button>
+      </div>
+      <p class="status" id="status" role="status">กำลังโหลดรายการล่าสุด…</p>
+      <div class="file-list" id="fileList" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell"><span>tawan-x.github.io/sites</span><span id="updatedAt">อัปเดตรายการเมื่อเปิดหน้านี้</span></div>
+  </footer>
+
+  <script>
+    const OWNER = "tawan-x";
+    const REPO = "sites";
+    const API_URL = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees/main?recursive=1`;
+    const SITE_ROOT = "https://tawan-x.github.io/sites/";
+
+    const fallbackFiles = [
+      { path: "index.html", type: "blob", size: 0 },
+      { path: "OIC-AI-Governance-Security-Session.html", type: "blob", size: 0 }
+    ];
+
+    const fileList = document.querySelector("#fileList");
+    const fileCount = document.querySelector("#fileCount");
+    const search = document.querySelector("#search");
+    const status = document.querySelector("#status");
+    const refresh = document.querySelector("#refresh");
+    const updatedAt = document.querySelector("#updatedAt");
+    let files = [];
+
+    function extension(path) {
+      const name = path.split("/").pop();
+      const index = name.lastIndexOf(".");
+      return index > 0 ? name.slice(index + 1).toUpperCase() : "FILE";
+    }
+
+    function readableSize(bytes) {
+      if (!bytes) return "ขนาดไม่ระบุ";
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / 1048576).toFixed(1)} MB`;
+    }
+
+    function displayName(path) {
+      if (path === "index.html") return "หน้าหลัก (index.html)";
+      return path.split("/").pop().replace(/[-_]+/g, " ").replace(/\.[^.]+$/, "");
+    }
+
+    function fileUrl(path) {
+      if (path === "index.html") return SITE_ROOT;
+      return SITE_ROOT + path.split("/").map(encodeURIComponent).join("/");
+    }
+
+    function render() {
+      const query = search.value.trim().toLocaleLowerCase("th");
+      const visible = files.filter(file => file.path.toLocaleLowerCase("th").includes(query));
+      fileCount.textContent = files.length.toLocaleString("th-TH");
+
+      if (!visible.length) {
+        fileList.innerHTML = `<div class="empty">ไม่พบไฟล์ที่ตรงกับ “${escapeHtml(search.value)}”</div>`;
+        return;
+      }
+
+      fileList.innerHTML = visible.map(file => {
+        const path = escapeHtml(file.path);
+        const name = escapeHtml(displayName(file.path));
+        const url = fileUrl(file.path);
+        const folder = file.path.includes("/") ? file.path.slice(0, file.path.lastIndexOf("/")) : "โฟลเดอร์หลัก";
+        return `
+          <article class="file-card">
+            <div class="file-icon" aria-hidden="true">${escapeHtml(extension(file.path))}</div>
+            <div class="file-main">
+              <h2 class="file-name">${name}</h2>
+              <div class="file-meta"><span class="file-path">${path}</span><span>${escapeHtml(folder)}</span><span>${readableSize(file.size)}</span></div>
+            </div>
+            <a class="open-link" href="${url}" target="_blank" rel="noopener">เปิดไฟล์ ↗</a>
+          </article>`;
+      }).join("");
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>'"]/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+      })[char]);
+    }
+
+    async function loadFiles() {
+      refresh.disabled = true;
+      status.textContent = "กำลังโหลดรายการล่าสุด…";
+      try {
+        const response = await fetch(API_URL, { headers: { Accept: "application/vnd.github+json" } });
+        if (!response.ok) throw new Error(`GitHub API ${response.status}`);
+        const data = await response.json();
+        files = data.tree
+          .filter(item => item.type === "blob" && !item.path.startsWith("."))
+          .sort((a, b) => a.path.localeCompare(b.path, "th", { numeric: true }));
+        status.textContent = `พบ ${files.length.toLocaleString("th-TH")} ไฟล์จากรายการล่าสุดบน GitHub`;
+        updatedAt.textContent = `อัปเดต ${new Intl.DateTimeFormat("th-TH", { dateStyle: "medium", timeStyle: "short" }).format(new Date())}`;
+      } catch (error) {
+        files = fallbackFiles;
+        status.textContent = "แสดงรายการสำรองล่าสุด — ไม่สามารถเชื่อมต่อ GitHub ได้ในขณะนี้";
+      } finally {
+        refresh.disabled = false;
+        render();
+      }
+    }
+
+    search.addEventListener("input", render);
+    refresh.addEventListener("click", loadFiles);
+    loadFiles();
+  </script>
+</body>
+</html>
