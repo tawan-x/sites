@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AIAC Talkscript — สคริปต์พูด + สิ่งที่ผู้ฟังควรได้รับ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F7FA;
+    --card:#FFFFFF;
+    --ink:#12181F;
+    --muted:#5B6472;
+    --muted2:#8A93A0;
+    --line:#E3E7ED;
+    --p1:#0F7B6C;         /* Sales Line — teal green */
+    --p1-soft:#E4F3EF;
+    --p2:#7C5CBF;         /* Reference Line — purple */
+    --p2-soft:#EFEAFA;
+    --amber:#B4770E;
+    --amber-soft:#FBF1E1;
+    --shadow: 0 1px 2px rgba(18,24,31,0.04), 0 4px 14px rgba(18,24,31,0.06);
+    --radius: 16px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0B1119; --card:#161F29; --ink:#ECEFF3; --muted:#A7B0BC; --muted2:#7C8896;
+      --line:#26313E; --p1:#35B99B; --p1-soft:#0F2A24; --p2:#A88CE0; --p2-soft:#251C3A;
+      --amber:#E8AE52; --amber-soft:#2E2413;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 20px rgba(0,0,0,0.35);
+    }
+  }
+  html.dark{
+    --bg:#0B1119; --card:#161F29; --ink:#ECEFF3; --muted:#A7B0BC; --muted2:#7C8896;
+    --line:#26313E; --p1:#35B99B; --p1-soft:#0F2A24; --p2:#A88CE0; --p2-soft:#251C3A;
+    --amber:#E8AE52; --amber-soft:#2E2413;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 20px rgba(0,0,0,0.35);
+  }
+  html.light{
+    --bg:#F5F7FA; --card:#FFFFFF; --ink:#12181F; --muted:#5B6472; --muted2:#8A93A0;
+    --line:#E3E7ED; --p1:#0F7B6C; --p1-soft:#E4F3EF; --p2:#7C5CBF; --p2-soft:#EFEAFA;
+    --amber:#B4770E; --amber-soft:#FBF1E1;
+    --shadow: 0 1px 2px rgba(18,24,31,0.04), 0 4px 14px rgba(18,24,31,0.06);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Sarabun","Noto Sans Thai","Segoe UI",-apple-system,Tahoma,sans-serif;
+    -webkit-font-smoothing:antialiased; line-height:1.6;
+    padding-bottom:64px;
+  }
+  a{color:inherit;}
+
+  /* ---------- Progress rail (train moving along the top) ---------- */
+  #progressRail{
+    position:fixed; top:0; left:0; right:0; height:3px; background:var(--line); z-index:60;
+  }
+  #progressFill{
+    height:100%; width:0%; background:linear-gradient(90deg,var(--p1),var(--p2));
+    transition:width .08s linear;
+  }
+
+  /* ---------- Top bar ---------- */
+  header.topbar{
+    position:sticky; top:0; z-index:50; background:var(--bg);
+    padding:16px 16px 10px; border-bottom:1px solid var(--line);
+  }
+  .brandrow{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .brand{font-weight:700; font-size:15px; letter-spacing:.2px;}
+  .brand small{display:block; font-weight:400; color:var(--muted); font-size:11.5px; margin-top:2px;}
+  .controls{display:flex; gap:8px;}
+  .ctrlbtn{
+    border:1px solid var(--line); background:var(--card); color:var(--ink);
+    border-radius:10px; padding:8px 10px; font-size:13px; font-family:inherit;
+    display:flex; align-items:center; gap:6px; cursor:pointer;
+  }
+  .ctrlbtn:active{transform:scale(0.97);}
+
+  /* station chip row */
+  .chiprow{
+    display:flex; gap:6px; overflow-x:auto; margin-top:12px; padding-bottom:4px;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  }
+  .chiprow::-webkit-scrollbar{display:none;}
+  .chip{
+    flex:0 0 auto; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:12px; font-weight:600; padding:6px 10px; border-radius:999px;
+    border:1px solid var(--line); color:var(--muted); text-decoration:none; background:var(--card);
+  }
+  .chip.p1{color:var(--p1); border-color:color-mix(in srgb, var(--p1) 35%, var(--line));}
+  .chip.p2{color:var(--p2); border-color:color-mix(in srgb, var(--p2) 35%, var(--line));}
+
+  /* ---------- Intro ---------- */
+  .intro{padding:18px 16px 6px;}
+  .intro h1{font-size:21px; margin:0 0 8px; line-height:1.35;}
+  .intro p{color:var(--muted); font-size:14.5px; margin:0 0 4px;}
+  .legend{display:flex; gap:14px; margin-top:14px; flex-wrap:wrap;}
+  .legend span{display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--muted);}
+  .dot{width:10px; height:10px; border-radius:50%; display:inline-block;}
+  .dot.p1{background:var(--p1);} .dot.p2{background:var(--p2);}
+
+  /* ---------- Timeline ---------- */
+  .timeline{position:relative; padding:22px 16px 40px 16px;}
+  .rail{
+    position:absolute; left:38px; top:0; bottom:0; width:3px;
+    background:var(--line); z-index:0;
+  }
+  .rail-seg{position:absolute; left:0; width:3px;}
+  .rail-seg.p1{background:var(--p1);}
+  .rail-seg.p2{background:repeating-linear-gradient(var(--p2),var(--p2) 6px, transparent 6px, transparent 11px);}
+
+  #trainDot{
+    position:absolute; left:32px; width:15px; height:15px; border-radius:50%;
+    background:var(--card); border:3px solid var(--p1); z-index:5;
+    box-shadow:0 0 0 5px color-mix(in srgb, var(--p1) 14%, transparent);
+    transition: top .12s linear, border-color .2s linear, box-shadow .2s linear;
+  }
+  #trainDot.on-p2{border-color:var(--p2); box-shadow:0 0 0 5px color-mix(in srgb, var(--p2) 14%, transparent);}
+
+  .stop{position:relative; z-index:2; padding-left:58px; margin-bottom:14px; scroll-margin-top:180px;}
+  .stopmark{
+    position:absolute; left:29px; top:14px; width:19px; height:19px; border-radius:50%;
+    background:var(--card); border:3px solid var(--p1); z-index:3;
+  }
+  .stop.sec2 .stopmark{border-color:var(--p2);}
+
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); overflow:hidden;
+  }
+  .card summary{
+    list-style:none; cursor:pointer; padding:13px 16px; display:flex; align-items:center; gap:12px;
+  }
+  .card summary::-webkit-details-marker{display:none;}
+  .stopnum{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-weight:700; font-size:13px;
+    color:var(--p1); background:var(--p1-soft); border-radius:8px; padding:3px 7px; flex:0 0 auto;
+  }
+  .stop.sec2 .stopnum{color:var(--p2); background:var(--p2-soft);}
+  .headtext{flex:1; min-width:0;}
+  .headtext .kicker{display:block; font-size:10.5px; font-weight:700; letter-spacing:.4px; text-transform:uppercase; color:var(--muted2);}
+  .headtext .ttl{display:block; font-size:15.5px; font-weight:600; margin-top:2px; line-height:1.3;}
+  .chev{flex:0 0 auto; color:var(--muted2); transition:transform .18s ease; font-size:13px;}
+  details[open] .chev{transform:rotate(90deg);}
+
+  .body{padding:0 16px 16px;}
+  .takeaway{
+    background:var(--amber-soft); border:1px solid color-mix(in srgb, var(--amber) 30%, var(--line));
+    border-radius:12px; padding:10px 12px; font-size:13.5px; margin-bottom:12px; line-height:1.55;
+  }
+  .takeaway b{color:var(--amber); display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:.3px; margin-bottom:3px; font-weight:700;}
+  .script{font-size:15px; line-height:1.75; color:var(--ink);}
+  .script .say{color:var(--muted); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.3px; display:block; margin-bottom:5px;}
+
+  .sectiondivider{
+    padding-left:58px; margin:26px 0 10px; font-size:12px; font-weight:700; letter-spacing:.4px;
+    text-transform:uppercase; color:var(--p2);
+  }
+
+  footer{padding:28px 16px 10px; text-align:center; color:var(--muted2); font-size:12px;}
+
+  @media (min-width:640px){
+    .timeline{padding-left:24px;}
+    .intro, header.topbar{padding-left:24px; padding-right:24px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progressRail"><div id="progressFill"></div></div>
+
+<header class="topbar">
+  <div class="brandrow">
+    <div class="brand">AIAC Talkscript<small>สคริปต์พูด + สิ่งที่ผู้ฟังควรได้รับ ต่อสไลด์</small></div>
+    <div class="controls">
+      <button class="ctrlbtn" id="toggleAll">เปิดทั้งหมด</button>
+      <button class="ctrlbtn" id="toggleTheme">🌓</button>
+    </div>
+  </div>
+  <div class="chiprow" id="chipRow"></div>
+</header>
+
+<div class="intro">
+  <h1>ใช้พูดตอน present จริง หรืออ่านทวนบนรถไฟฟ้าก่อนเข้างาน</h1>
+  <p>แต่ละ "สถานี" คือหนึ่งสไลด์ในเอกสาร AIAC Sales Enablement (TH) — แตะเพื่อขยายดูสคริปต์เต็มและสิ่งที่ผู้ฟังควรได้รับ</p>
+  <div class="legend">
+    <span><i class="dot p1"></i> Part 1 — เส้นทางของ Sales (สไลด์ 1–14)</span>
+    <span><i class="dot p2"></i> Appendix — อ้างอิงเชิงลึก (สไลด์ 15–24)</span>
+  </div>
+</div>
+
+<div class="timeline" id="timeline">
+  <div class="rail">
+    <div class="rail-seg p1" id="railP1"></div>
+    <div class="rail-seg p2" id="railP2"></div>
+  </div>
+  <div id="trainDot"></div>
+
+  <!-- ================= PART 1 ================= -->
+
+  <div class="stop sec1" id="s1" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">01</span>
+        <span class="headtext"><span class="kicker">หน้าปก</span><span class="ttl">AI Application Cybersecurity (AIAC)</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>เข้าใจภาพรวมว่า session นี้จะพาไปทางไหน และรู้ตัวว่าไม่จำเป็นต้องเป็นผู้เชี่ยวชาญด้านเทคนิคหลังจบ session</div>
+        <div class="script"><span class="say">พูดว่า</span>"สวัสดีครับทุกคน วันนี้เราจะมาคุยกันเรื่อง AI Application Cybersecurity หรือ AIAC ซึ่งเป็น session คู่กับ AIUC ที่เราเคยเรียนกันไปแล้ว ถ้า AIUC คือเรื่องพนักงานใช้ AI ของคนอื่น AIAC คือเรื่องลูกค้าสร้าง AI ขึ้นมาเอง วันนี้เป้าหมายไม่ใช่ให้ทุกคนเป็นผู้เชี่ยวชาญด้านเทคนิค แต่ให้จับสัญญาณได้ อธิบายความเสี่ยงได้ และรู้ว่าจะส่งต่อให้ใคร"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec1" id="s2" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">02</span>
+        <span class="headtext"><span class="kicker">กรอบการทำงาน</span><span class="ttl">สามขั้นตอน: รู้จัก เรียกชื่อ ส่งต่อ</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>จำ 3-step framework ได้ขึ้นใจ และเข้าใจว่าหน้าที่ของ Sales คือ "จับสัญญาณ" ไม่ใช่ "วินิจฉัยทางเทคนิค"</div>
+        <div class="script"><span class="say">พูดว่า</span>"หลักการของวันนี้มีอยู่ 3 ขั้นตอนเท่านั้น จำแค่นี้พอ ข้อแรก รู้ขอบเขต — AI ที่ลูกค้าสร้างเองคือ AIAC ถ้าลูกค้าแค่ใช้ AI ของคนอื่นคือ AIUC ข้อสอง ระบุ stage — AI ตัวนั้นแค่ตอบคำถาม เชื่อมกับระบบ หรือลงมือทำเอง ยิ่งไปทางขวายิ่งเสี่ยงสูง ข้อสาม ส่งต่อบริบท ไม่ใช่ solution — จด account, stage, risk ส่งให้ Presales Manager แค่นี้ครบ"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec1" id="s3" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">03</span>
+        <span class="headtext"><span class="kicker">คำศัพท์ที่จะได้ยิน</span><span class="ttl">แปดคำศัพท์ อธิบายแบบเข้าใจง่าย</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>จำหลักการ "ไม่ต้องรู้ลึก แต่ต้องจับได้" และรู้ว่าเมื่อเจอศัพท์ที่ไม่เข้าใจต้องทำอย่างไร (จด ไม่เดา)</div>
+        <div class="script"><span class="say">พูดว่า</span>"ก่อนไปต่อ ขอปูพื้นคำศัพท์ 8 คำที่จะได้ยินบ่อย ไม่ต้องท่องจำนิยาม แค่จำให้ได้ว่าคำไหนคืออะไรคร่าวๆ พอ เช่น RAG คือ AI ที่ค้นเอกสารบริษัทก่อนตอบ, Agent คือ AI ที่ทำงานหลายขั้นตอนเอง, MCP คือปลั๊กที่เชื่อม AI เข้ากับระบบ ถ้าลูกค้าพูดคำไหนที่ไม่คุ้น อย่าเดา ให้จดไว้แล้วส่งให้ Presales"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec1" id="s4" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">04</span>
+        <span class="headtext"><span class="kicker">Gartner AISP</span><span class="ttl">AIAC คือหนึ่งในสองเสาหลักของกรอบ Gartner</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>รู้สึกมั่นใจว่า AIAC มีกรอบอ้างอิงระดับ analyst รองรับ ไม่ใช่แค่มุมมองภายในของ DCS</div>
+        <div class="script"><span class="say">พูดว่า</span>"AIAC ไม่ใช่ที่เราคิดขึ้นมาเอง Gartner นิยามไว้ชัดเจนว่า AI Security Platform มีสองเสาหลัก คือ AIUC ที่เราคุยกันไปแล้ว กับ AIAC ที่เป็น session วันนี้ ฝั่ง AIAC มี 6 pillar ได้แก่ discovery, AI-SPM, MCP security, rogue agent detection, multimodal guardrail และ automated testing ไม่ต้องจำ 6 ข้อนี้เป๊ะ แต่รู้ไว้ว่ามันมีกรอบมาตรฐานรองรับ ไม่ใช่เราพูดเอง"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec1" id="s5" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">05</span>
+        <span class="headtext"><span class="kicker">สัญญาณ Pain</span><span class="ttl">ห้าสัญญาณที่เปิดบทสนทนา AIAC</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>จำได้ว่ามี 5 สัญญาณ และรู้สึกว่าตัวเองถามหาสัญญาณเหล่านี้จาก contact ที่มีอยู่แล้วได้ทันที ไม่ต้องรอ relationship ใหม่</div>
+        <div class="script"><span class="say">พูดว่า</span>"ทีนี้มาดูสัญญาณที่เปิดบทสนทนา AIAC ได้ ข้อดีคือสัญญาณพวกนี้ Security, IT, Compliance ที่เราคุยด้วยอยู่แล้วเห็นได้เองเลย ไม่ต้องรู้จักทีม dev ก่อน เช่น เห็น traffic ประหลาดใน log, มีการขอ AI service account บ่อยๆ โดยไม่มีใครถาม scope, หรือ audit เจอ data flow เข้า AI ที่ไม่เคยอนุมัติ ฟังดูคุ้นไหมครับ ลูกค้าเกือบทุกรายมีอย่างน้อยหนึ่งข้อ"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec1" id="s6" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card" open>
+      <summary>
+        <span class="stopnum">06</span>
+        <span class="headtext"><span class="kicker">องค์กรพัฒนา AI อย่างไร</span><span class="ttl">Answers · Connects · Acts — สไลด์หลักของ session</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>พูดคำว่า Answers, Connects, Acts ได้คล่องปาก และเข้าใจว่าความเสี่ยงเพิ่มขึ้นตามลำดับนี้ — นี่คือคำศัพท์หลักที่ใช้ตลอด session</div>
+        <div class="script"><span class="say">พูดว่า</span>"นี่คือสไลด์ที่สำคัญที่สุดของวันนี้ ถ้าจำได้แค่หน้าเดียว ให้จำหน้านี้ AI ที่ลูกค้าสร้างมี 3 ระดับ Answers คือแค่ตอบคำถาม เสี่ยงต่ำสุด Connects คือเชื่อมกับระบบหรือข้อมูลภายนอกผ่าน API หรือ MCP เสี่ยงปานกลาง และ Acts คือ AI ลงมือทำเองหลายขั้นตอน เสี่ยงสูงสุด ยิ่งไปทางขวายิ่งต้องคุย control มากขึ้น สามคำนี้ผมอยากให้ทุกคนพูดได้คล่องเหมือนพูดชื่อตัวเอง"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec1" id="s7" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">07</span>
+        <span class="headtext"><span class="kicker">จุดเริ่มต้นของบทสนทนา</span><span class="ttl">ดีล AIAC มักเริ่มขึ้นกลางบทสนทนา AIUC</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>ฝึกหูให้จับประโยค trigger ได้ทันทีระหว่างบทสนทนา AIUC ตามปกติ โดยไม่ต้องรอ session แยก</div>
+        <div class="script"><span class="say">พูดว่า</span>"ประโยคพวกนี้คือสิ่งที่ฟังจาก Security, IT หรือ Compliance แล้วรู้เลยว่าเดินเข้า AIAC territory แล้ว เช่น 'เราเห็น traffic ออกไปยัง API ที่เราระบุที่มาไม่ได้' หรือ 'มีคนขอ service account ให้ AI เข้าระบบแต่เราไม่รู้ scope จริง' พอได้ยินประโยคแบบนี้กลางวง AIUC ไม่ต้องนัดประชุมใหม่เลยครับ แค่เปลี่ยนโหมดคำถามทันที"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec1" id="s8" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">08</span>
+        <span class="headtext"><span class="kicker">การทำ Discovery</span><span class="ttl">ห้าคำถามที่ช่วย qualify โอกาส AIAC</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>จำลำดับคำถามได้และมั่นใจที่จะถามชุดนี้ในบทสนทนาจริง โดยเฉพาะรู้ว่า Q1 คือจุดตัดสินใจว่าจะไปต่อหรือไม่</div>
+        <div class="script"><span class="say">พูดว่า</span>"ถ้าได้ยิน trigger แล้ว ต่อด้วย 5 คำถามนี้ตามลำดับ Security หรือ IT ตอบได้เองครบทุกข้อ ไม่ต้องรอ dev คำถามแรกคือตัวคัดกรอง ถ้าลูกค้าตอบว่าไม่มี in-house build เลย ก็ยังอยู่ AIUC ต่อ อย่าฝืน แต่ถ้าตอบว่ามี ให้ถามต่อไปจนถึงข้อ 5 เรื่องทดสอบด้าน security ซึ่งเกือบทุกครั้งคำตอบคือ 'ไม่' — ตรงนั้นแหละคือช่องเปิดให้ส่งต่อ Presales"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec1" id="s9" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">09</span>
+        <span class="headtext"><span class="kicker">ควรคุยกับใคร</span><span class="ttl">Pain ของ AIAC อยู่กับคนที่ Sales ไม่ค่อยได้เจอ</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>รู้ว่ามี 4 กลุ่มคนที่คุยได้ และมั่นใจว่าไม่จำเป็นต้องมี relationship กับทีม dev มาก่อนถึงจะเริ่มบทสนทนาได้</div>
+        <div class="script"><span class="say">พูดว่า</span>"หลายคนคิดว่า AIAC ต้องคุยกับทีม dev เท่านั้น จริงๆ ไม่ใช่ CISO ที่เรารู้จักอยู่แล้วเป็นจุดเริ่มหลักได้เลย ทีม IT หรือ Network ก็เห็นสัญญาณระดับ traffic ก่อนใคร ส่วนทีม dev เอง บางทีก็คุยตรงได้ถ้ามีช่องทาง มักผ่านการแนะนำจาก Security หรือ IT อีกที และถ้าเป็น BFSI อย่าลืมทีม Model Risk เพราะเขาทำงานคล้ายกับที่เราขาย AIAC อยู่แล้ว"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec1" id="s10" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">10</span>
+        <span class="headtext"><span class="kicker">ทำไมเรื่องนี้สำคัญตอนนี้</span><span class="ttl">สองประเด็นกฎหมายที่บังคับใช้ในไทยอยู่แล้ว</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>แยกออกว่า hook ไหน (PDPA/BOT ITRM) ใช้อ้างอิงกับลูกค้าไทยได้จริง กับ hook ไหน (EU AI Act) ใช้แค่เป็นข้อมูลประกอบเท่านั้น</div>
+        <div class="script"><span class="say">พูดว่า</span>"เวลาลูกค้าถามว่าทำไมต้องสนใจตอนนี้ มีสอง hook ที่ใช้ได้จริงในไทย PDPA มีผลทันทีที่ AI แตะข้อมูลส่วนบุคคล ส่วน BOT ITRM มีผลกับ BFSI เมื่อ AI เกี่ยวข้องกับการตัดสินใจทางธุรกิจ ลองถามลูกค้าตรงๆ ตามประโยคในกล่องสีได้เลย ส่วน EU AI Act ที่เจอในเอกสาร vendor บ่อยๆ ให้ระวัง มันเป็น reference สากล ไม่ใช่ข้อบังคับของไทย อย่าพูดให้ลูกค้าเข้าใจผิด"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec1" id="s11" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">11</span>
+        <span class="headtext"><span class="kicker">Solution</span><span class="ttl">AI Security Stack: solution แต่ละตัวอยู่ตรงไหน</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>จำภาพรวม 4 ชั้นได้ และเข้าใจว่านี่คือ "แผนที่" ที่ใช้อธิบายให้ลูกค้าฟังได้ในหน้าเดียว โดยไม่ต้องท่องชื่อ vendor</div>
+        <div class="script"><span class="say">พูดว่า</span>"ภาพนี้สรุปทุกอย่างที่เราคุยมาให้อยู่ในหน้าเดียว จากล่างขึ้นบน เริ่มที่ Foundational Security ซึ่งลูกค้ามีอยู่แล้ว ต่อด้วย AI Infrastructure อย่าง AI-SPM แล้วก็ AI Application & Agent ที่แบ่งเป็น Answer, Connect, Act เหมือนที่เราคุยกัน และบนสุดคือ Governance ที่คลุมทุกอย่าง ผมไม่อยากให้ทุกคนท่องชื่อ vendor ในนี้ ให้เล่าโครงสร้างเป็นหลัก ชื่อ vendor ไว้ดูหน้าถัดไป"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec1" id="s12" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">12</span>
+        <span class="headtext"><span class="kicker">Market Awareness</span><span class="ttl">Vendor List by Solution</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>รู้ว่าหน้านี้มีไว้ค้นหาเวลาจำเป็น ไม่ใช่ต้องจำ และเข้าใจกฎเหล็กว่าห้ามโชว์ตารางนี้ให้ลูกค้าดูโดยตรง</div>
+        <div class="script"><span class="say">พูดว่า</span>"หน้านี้คือ reference ไม่ใช่สิ่งที่ต้องท่อง ถ้าลูกค้าถามว่า 'มีใครทำ MCP Gateway บ้าง' เปิดหน้านี้ดูได้เลย จัดกลุ่มตาม solution ไม่ใช่ตาม layer เทคนิค ข้อสำคัญคือทุกชื่อในนี้เป็นข้อมูลจาก public source เท่านั้น ยังไม่ confirm สิทธิ์ของ DCS ห้ามเอาไปโชว์ลูกค้าโดยตรง และห้ามเปิดบทสนทนาด้วยชื่อ vendor เด็ดขาด"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec1" id="s13" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">13</span>
+        <span class="headtext"><span class="kicker">การส่งต่อ</span><span class="ttl">จับสี่สัญญาณ แล้วส่งต่อให้ Presales</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>จำ 4 field ที่ต้องกรอกก่อนส่งต่อได้ และรู้ชัดว่าเส้นทางการส่งต่อไปที่ใคร</div>
+        <div class="script"><span class="say">พูดว่า</span>"จบบทสนทนาแล้วอยากส่งต่อ ให้จับ 4 สัญญาณนี้ Account, Stage, Risk, และเงื่อนไขที่รู้อยู่แล้ว ส่งให้ Presales Manager เขาจะเป็นคนมอบหมายทีมที่เหมาะสมต่อ ถ้ามีความเห็นขัดแย้งเรื่อง vendor ให้ escalate ไปที่ Sales Manager กับ SIG Lead ไม่ต้องตัดสินใจเองว่าจะใช้ vendor ไหน"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec1" id="s14" data-sec="1">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">14</span>
+        <span class="headtext"><span class="kicker">บทสรุป</span><span class="ttl">คำตอบแรกที่มั่นใจ เมื่อเจอคำถามเรื่อง AIAC</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>จำประโยคปิดได้แม่นจนพูดได้ทันทีโดยไม่ต้องคิด และรู้สึกมั่นใจว่ามีคำตอบพร้อมใช้เสมอแม้ไม่รู้รายละเอียดเทคนิค</div>
+        <div class="script"><span class="say">พูดว่า</span>"สรุปสั้นๆ ถ้าลูกค้าถามเรื่อง AIAC แล้วไม่รู้จะตอบอะไร ให้พูดประโยคนี้ 'ก่อนเลือก solution เราควร confirm สถาปัตยกรรมของระบบ AI ก่อนว่าผ่านการทดสอบและมีการกำกับดูแลก่อนขึ้น production หรือยัง' จากนั้นทำ 4 อย่าง ระบุ stage บอกความเสี่ยงด้วยคำพูดลูกค้าเอง ห้ามเอ่ยชื่อ vendor แล้วส่งต่อ Presales AIAC ไม่ใช่ feature ของ vendor รายเดียว มันคือบทสนทนาเรื่อง architecture, testing, governance"</div>
+      </div>
+    </details>
+  </div>
+
+  <!-- ================= APPENDIX ================= -->
+
+  <div class="sectiondivider">▾ ภาคผนวก — อ้างอิงเชิงลึก (ไม่จำเป็นสำหรับเปิดบทสนทนา)</div>
+
+  <div class="stop sec2" id="s15" data-sec="2">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">15</span>
+        <span class="headtext"><span class="kicker">ภาคผนวก</span><span class="ttl">ข้อมูลอ้างอิงเชิงเทคนิค</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>เข้าใจว่าเนื้อหาต่อจากนี้เป็น optional reference ไม่ใช่สิ่งที่ต้องจำเพื่อไปคุยกับลูกค้า</div>
+        <div class="script"><span class="say">พูดว่า</span>"จากตรงนี้ไปเป็นภาคผนวกสำหรับใครที่อยากรู้ลึกขึ้น หรือเก็บไว้ตอบคำถามยากๆ จาก Presales ไม่จำเป็นต้องใช้เปิดบทสนทนากับลูกค้า"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec2" id="s16" data-sec="2">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">16</span>
+        <span class="headtext"><span class="kicker">สถาปัตยกรรมระบบ</span><span class="ttl">หกเลเยอร์ของระบบ AI ที่ลูกค้าสร้างเอง</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>รู้ว่ามี reference สำหรับ layer เทคนิคถ้าจำเป็นต้องใช้ แต่ไม่ต้องท่องจำในชีวิตประจำวัน</div>
+        <div class="script"><span class="say">พูดว่า</span>"นี่คือ 6 layer ทางเทคนิคของระบบ AI ที่ลูกค้าสร้าง ตั้งแต่ Model, Data, Application, Agent, Integration ไปจน Deployment โมเดลนี้ DCS ประกอบขึ้นเองจากหลาย framework ไม่ใช่ standard ตัวเดียว ถ้า Presales ถามถึง layer ไหน ให้กลับมาดูหน้านี้"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec2" id="s17" data-sec="2">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">17</span>
+        <span class="headtext"><span class="kicker">การจับคู่</span><span class="ttl">แต่ละ layer จับคู่กับ AIAC pillar และ control point</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>จำกฎ "Do Not Assume" ได้ และรู้ว่าต้องให้ Presales ยืนยัน coverage เสมอ ไม่ใช่สันนิษฐานเอง</div>
+        <div class="script"><span class="say">พูดว่า</span>"ตารางนี้จับคู่แต่ละ layer กับ pillar ของ Gartner และ control point ที่เกี่ยวข้อง กฎสำคัญคือ 'Do Not Assume' ห้ามบอกลูกค้าว่า vendor เดียว cover ทุก layer จนกว่า Presales จะ validate"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec2" id="s18" data-sec="2">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">18</span>
+        <span class="headtext"><span class="kicker">วงจรการทำงาน — NIST AI RMF</span><span class="ttl">Govern, Map, Measure, Manage</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>เข้าใจว่าทำไม cycle ของ AIAC ต่างจาก AIUC และตอบคำถามนี้ได้ถ้าลูกค้าสงสัย</div>
+        <div class="script"><span class="say">พูดว่า</span>"วงจรการทำงานของ AIAC ใช้ภาษา NIST AI RMF คือ Govern, Map, Measure, Manage ซึ่งต่างจาก 5-step ของ AIUC โดยตั้งใจ เพราะ AIAC คุยไปถึงทีม Dev, Risk, MRM ที่คุ้นกับภาษานี้อยู่แล้ว ถ้าลูกค้าถามว่าทำไมสอง session ใช้ cycle ไม่เหมือนกัน ให้อธิบายตรงนี้ได้เลย"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec2" id="s19" data-sec="2">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">19</span>
+        <span class="headtext"><span class="kicker">นโยบาย</span><span class="ttl">สามนโยบายกำกับการพัฒนา AI</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>รู้จุดขายว่า "ต่อยอดจากของเดิม ไม่ต้องสร้างใหม่" ซึ่งลดแรงต้านจากลูกค้าได้มาก</div>
+        <div class="script"><span class="say">พูดว่า</span>"AI ต้องมี 3 นโยบายกำกับ Build Policy, Model Risk Management Policy และ Third-Party AI Policy ข่าวดีคือ BFSI ส่วนใหญ่มี MRM function อยู่แล้วจาก credit risk วาง AIAC เป็นส่วนต่อขยายของ MRM ไม่ใช่บอกให้สร้างฟังก์ชันใหม่ทั้งหมด"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec2" id="s20" data-sec="2">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">20</span>
+        <span class="headtext"><span class="kicker">การจัดระดับความเสี่ยง</span><span class="ttl">จัดระดับตามสิ่งที่ระบบทำได้</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>เข้าใจตรรกะการจัดระดับความเสี่ยงตาม "ความสามารถของระบบ" ไม่ใช่ตามข้อมูล และรู้ว่าอ้างกฎหมายไทยข้อไหนได้บ้าง</div>
+        <div class="script"><span class="say">พูดว่า</span>"การจัดระดับความเสี่ยงของ AIAC ดูที่ระบบทำอะไรได้ ไม่ใช่แค่ข้อมูลอะไรเข้า ยิ่งระบบลงมือทำเองมากเท่าไหร่ ยิ่งต้อง validate มากขึ้น ระดับสูงสุดอย่างการตัดสินสินเชื่อต้องผ่าน MRM เต็มรูปแบบ ในไทยให้อิง PDPA กับ BOT ITRM เป็นหลัก ส่วน EU AI Act เป็นแค่ reference สากล"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec2" id="s21" data-sec="2">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">21</span>
+        <span class="headtext"><span class="kicker">การตรวจสอบเชิงเทคนิค</span><span class="ttl">ทุก control point มีจุดแข็ง และข้อจำกัด</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>เข้าใจว่าไม่มี solution เดียวที่สมบูรณ์แบบ และรู้สึกสบายใจที่จะบอกลูกค้าตรงๆ ว่าต้องผสมหลาย control เข้าด้วยกัน</div>
+        <div class="script"><span class="say">พูดว่า</span>"ทุก control point มีจุดแข็งและข้อจำกัดของตัวเอง AI-SPM ตรวจจับได้ดีแต่ไม่ป้องกัน runtime attack, MCP Gateway คุม tool-call ได้แต่ไม่รู้เหตุผลเบื้องหลังโมเดล ไม่มี solution ไหนตอบโจทย์ครบทุกอย่าง นี่คือเหตุผลที่ต้องให้ Presales ประเมินร่วมกับลูกค้าเสมอ"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec2" id="s22" data-sec="2">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">22</span>
+        <span class="headtext"><span class="kicker">อ้างอิงเชิงพาณิชย์ — สำหรับ Presales</span><span class="ttl">ถ้ามี installed base: ทางขยายสู่ AIAC</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>รู้ว่าตารางนี้ใช้ตอน deal ชัดเจนแล้วว่าเป็น expansion ไม่ใช่ใช้เปิดบทสนทนาตั้งแต่แรก</div>
+        <div class="script"><span class="say">พูดว่า</span>"หน้านี้สำหรับ Presales มากกว่า Sales เพราะ AIAC ไม่เหมือน AIUC ที่ต่อยอดจาก installed base ได้ง่ายๆ หลาย deal ของ AIAC เป็นการประเมินใหม่ทั้งหมด แต่ถ้า deal ไหนชัดแล้วว่าเป็นการขยาย ตารางนี้ช่วยหาจุดเริ่มที่เร็วสุด เช่นลูกค้ามี CyberArk อยู่แล้ว ก็ไปต่อ Agentic Identity ได้เลย"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec2" id="s23" data-sec="2">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">23</span>
+        <span class="headtext"><span class="kicker">Market Awareness — Public Sources</span><span class="ttl">Vendor 6×6: ใครอยู่ตรงไหน</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>รู้ว่าตารางนี้มีไว้เป็น backup reference สำหรับ Presales ไม่ต้องพยายามจำรายละเอียด</div>
+        <div class="script"><span class="say">พูดว่า</span>"ตารางนี้ละเอียดที่สุดในเอกสาร จับคู่ 6 vendor กับ 6 layer เดียวกับที่เราคุยกัน มีไว้ให้ Presales ใช้ตรวจสอบ ไม่ใช่ให้ Sales ท่อง ข้อมูลทั้งหมดมาจาก public source เท่านั้น ยังไม่ confirm สิทธิ์การขายจริงของ DCS"</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="stop sec2" id="s24" data-sec="2">
+    <div class="stopmark"></div>
+    <details class="card">
+      <summary>
+        <span class="stopnum">24</span>
+        <span class="headtext"><span class="kicker">พอร์ตโฟลิโอเพิ่มเติม</span><span class="ttl">อีกสาม vendor ที่เกี่ยวข้องกับ AIAC</span></span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="body">
+        <div class="takeaway"><b>ผู้ฟังควรได้รับ</b>รู้จักอีก 3 vendor ที่อาจเกี่ยวข้องในบางสถานการณ์ และปิด session ด้วยความเข้าใจภาพรวมครบถ้วน</div>
+        <div class="script"><span class="say">พูดว่า</span>"ปิดท้ายด้วย vendor อีก 3 รายที่เกี่ยวข้อง Imperva เด่นเรื่อง Application layer โดยเฉพาะ AI app ที่เปิดผ่าน web หรือ API, Trend Micro เหมาะกับลูกค้าที่ใช้ Vision One อยู่แล้ว และ Forcepoint เด่นเรื่อง data-first เหมาะคุยก่อน RAG rollout เหมือนเดิม ข้อมูลนี้เพื่อการรับรู้เท่านั้น"</div>
+      </div>
+    </details>
+  </div>
+
+</div>
+
+<footer>AIAC Sales Enablement (TH) · Talkscript reference · DCS Cybersecurity Business Development</footer>
+
+<script>
+(function(){
+  // Theme: default to system, allow manual override
+  var root = document.documentElement;
+  var saved = null;
+  try { saved = localStorage.getItem('aiac-theme'); } catch(e){}
+  if(saved) root.classList.add(saved);
+  document.getElementById('toggleTheme').addEventListener('click', function(){
+    var isDark = root.classList.contains('dark') ||
+      (!root.classList.contains('light') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    root.classList.remove('dark','light');
+    var next = isDark ? 'light' : 'dark';
+    root.classList.add(next);
+    try { localStorage.setItem('aiac-theme', next); } catch(e){}
+  });
+
+  // Expand / collapse all
+  var allOpen = false;
+  document.getElementById('toggleAll').addEventListener('click', function(){
+    allOpen = !allOpen;
+    document.querySelectorAll('.timeline details').forEach(function(d){ d.open = allOpen; });
+    this.textContent = allOpen ? 'ย่อทั้งหมด' : 'เปิดทั้งหมด';
+  });
+
+  // Build station chip row
+  var chipRow = document.getElementById('chipRow');
+  var stops = document.querySelectorAll('.stop');
+  stops.forEach(function(s){
+    var num = s.querySelector('.stopnum').textContent;
+    var sec = s.dataset.sec;
+    var a = document.createElement('a');
+    a.href = '#' + s.id;
+    a.className = 'chip ' + (sec === '1' ? 'p1' : 'p2');
+    a.textContent = num;
+    chipRow.appendChild(a);
+  });
+
+  // Position rail segments to match Part1 / Appendix boundary
+  function layoutRail(){
+    var timeline = document.getElementById('timeline');
+    var tRect = timeline.getBoundingClientRect();
+    var firstSec2 = document.querySelector('.stop.sec2');
+    var lastStop = stops[stops.length - 1];
+    var railP1 = document.getElementById('railP1');
+    var railP2 = document.getElementById('railP2');
+    var startTop = stops[0].querySelector('.stopmark').offsetTop + 9;
+    var boundaryTop = firstSec2 ? firstSec2.querySelector('.stopmark').offsetTop + 9 : startTop;
+    var endTop = lastStop.querySelector('.stopmark').offsetTop + 9;
+    railP1.style.top = startTop + 'px';
+    railP1.style.height = (boundaryTop - startTop) + 'px';
+    railP2.style.top = boundaryTop + 'px';
+    railP2.style.height = (endTop - boundaryTop) + 'px';
+  }
+
+  // Scroll progress + train dot position
+  var trainDot = document.getElementById('trainDot');
+  var progressFill = document.getElementById('progressFill');
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function onScroll(){
+    var doc = document.documentElement;
+    var scrollTop = window.scrollY || doc.scrollTop;
+    var scrollH = doc.scrollHeight - doc.clientHeight;
+    var pct = scrollH > 0 ? Math.min(1, Math.max(0, scrollTop / scrollH)) : 0;
+    progressFill.style.width = (pct * 100) + '%';
+
+    var timeline = document.getElementById('timeline');
+    var tTop = timeline.getBoundingClientRect().top + scrollTop;
+    var tHeight = timeline.offsetHeight;
+    var viewportMid = scrollTop + window.innerHeight * 0.32;
+    var relative = Math.min(Math.max(viewportMid - tTop, 0), tHeight);
+    trainDot.style.top = relative + 'px';
+
+    var midY = window.innerHeight * 0.32;
+    var current = null;
+    stops.forEach(function(s){
+      var r = s.getBoundingClientRect();
+      if(r.top <= midY) current = s;
+    });
+    if(current && current.dataset.sec === '2'){ trainDot.classList.add('on-p2'); }
+    else { trainDot.classList.remove('on-p2'); }
+  }
+
+  window.addEventListener('load', function(){ layoutRail(); onScroll(); });
+  window.addEventListener('resize', function(){ layoutRail(); onScroll(); });
+  window.addEventListener('scroll', reduceMotion ? function(){ progressFill.style.width = '0%'; } : onScroll, {passive:true});
+
+  document.querySelectorAll('.timeline details').forEach(function(d){
+    d.addEventListener('toggle', layoutRail);
+  });
+})();
+</script>
+
+</body>
+</html>
