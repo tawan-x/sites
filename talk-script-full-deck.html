@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talk Script — Full Deck (31 slides)</title>
+<style>
+  :root{
+    --bg:#F7F4ED; --ink:#20231F; --mut:#5F615C; --rust:#B94A32;
+    --gold:#B98418; --olive:#4F6554; --rule:#D8D2C7; --card:#FFFDF8;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family: Arial, "Helvetica Neue", sans-serif;
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  a{ color:inherit; }
+
+  /* ---- shell layout ---- */
+  .shell{ display:flex; align-items:flex-start; max-width:1180px; margin:0 auto; }
+  .sidebar{
+    width:270px; flex:0 0 270px; position:sticky; top:0; align-self:flex-start;
+    max-height:100vh; overflow-y:auto; padding:28px 18px 40px 28px;
+    border-right:1px solid var(--rule);
+  }
+  .main{ flex:1 1 auto; min-width:0; padding:28px 40px 100px 36px; }
+
+  /* ---- header ---- */
+  .kicker{
+    font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--rust); margin:0 0 8px;
+  }
+  h1{
+    font-family: Georgia, "Times New Roman", serif;
+    font-size:32px; line-height:1.15; margin:0 0 6px; font-weight:700;
+  }
+  .subhead{ color:var(--mut); font-size:14.5px; margin:0 0 22px; }
+  .meta-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+  .pill{
+    font-size:11px; font-weight:700; letter-spacing:.03em;
+    padding:5px 11px; border-radius:999px; border:1px solid var(--rule);
+    background:var(--card); color:var(--mut); white-space:nowrap;
+  }
+
+  /* ---- sidebar TOC ---- */
+  .sidebar .brand{ font-size:12.5px; font-weight:700; margin:0 0 4px; }
+  .sidebar .brand-sub{ font-size:10.5px; color:var(--mut); margin:0 0 24px; }
+  .toc-group{
+    font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    margin:22px 0 8px; padding-top:10px; border-top:1px solid var(--rule);
+  }
+  .toc-group:first-of-type{ border-top:none; padding-top:0; margin-top:0; }
+  .toc-rust{ color:var(--rust); } .toc-olive{ color:var(--olive); }
+  .toc-mut{ color:var(--mut); } .toc-mixed{ color:var(--gold); }
+  ul.toc-list{ list-style:none; margin:0; padding:0; }
+  ul.toc-list li{ margin-bottom:2px; }
+  ul.toc-list a{
+    display:flex; align-items:baseline; gap:6px; text-decoration:none;
+    font-size:12.5px; color:var(--ink); padding:5px 8px; border-radius:5px;
+  }
+  ul.toc-list a:hover{ background:var(--card); }
+  .toc-n{ font-family: ui-monospace, monospace; font-size:10.5px; color:var(--mut); flex:0 0 auto; }
+  .toc-fid{
+    font-size:9px; font-weight:700; padding:1px 5px; border-radius:4px; flex:0 0 auto;
+  }
+  .toc-fid.rust{ background:#f3e3de; color:var(--rust); }
+  .toc-fid.gold{ background:#f3ecd8; color:var(--gold); }
+
+  /* ---- section groups ---- */
+  .section-title{
+    font-family: Georgia, serif; font-size:20px; font-weight:700; margin:48px 0 16px;
+    padding-bottom:8px; border-bottom:2px solid var(--rule);
+  }
+  .section-title:first-child{ margin-top:0; }
+  .section-title.rust{ border-color:var(--rust); }
+  .section-title.olive{ border-color:var(--olive); }
+  .section-title.mut{ border-color:var(--mut); }
+  .section-title.mixed{ border-color:var(--gold); }
+
+  /* ---- slide card ---- */
+  .slide-card{
+    background:var(--card); border:1px solid var(--rule); border-radius:8px;
+    padding:20px 24px; margin-bottom:16px; scroll-margin-top:16px;
+  }
+  .slide-head{ display:flex; align-items:flex-start; gap:14px; margin-bottom:12px; }
+  .slide-num{
+    font-family: Georgia, serif; font-size:20px; font-weight:700; color:var(--rust);
+    flex:0 0 auto; min-width:32px;
+  }
+  .slide-head-text{ flex:1 1 auto; min-width:0; }
+  .slide-head .pill{ flex:0 0 auto; }
+  .eyebrow{
+    font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--mut); margin:0 0 4px;
+  }
+  .slide-head h3{ font-size:16px; margin:0; font-weight:700; line-height:1.3; }
+  .fid{
+    display:inline-block; font-size:10px; font-weight:700; letter-spacing:.04em;
+    padding:2px 7px; border-radius:5px; margin-left:8px; vertical-align:middle;
+  }
+  .fid.rust{ background:#f3e3de; color:var(--rust); }
+  .fid.gold{ background:#f3ecd8; color:var(--gold); }
+
+  .notes{ font-size:13.5px; color:var(--ink); }
+  .notes p{ margin:0 0 10px; }
+  .notes p:last-child{ margin-bottom:0; }
+  .notes .q{
+    font-style:italic; color:var(--rust); background:#f8efe9; padding:0 4px; border-radius:3px;
+  }
+  .notes .empty{ color:var(--mut); font-style:italic; }
+
+  footer{
+    margin-top:44px; padding-top:16px; border-top:1px solid var(--rule);
+    display:flex; justify-content:space-between; font-size:10px; color:var(--mut);
+    letter-spacing:.05em; text-transform:uppercase; flex-wrap:wrap; gap:6px;
+  }
+
+  @media (max-width:900px){
+    .shell{ flex-direction:column; }
+    .sidebar{
+      width:100%; flex:none; position:relative; max-height:none;
+      border-right:none; border-bottom:1px solid var(--rule); padding:20px 20px 8px;
+    }
+    .main{ padding:24px 20px 80px; }
+  }
+  @media print{
+    .sidebar{ display:none; }
+    .shell{ display:block; }
+    body{ background:#fff; }
+    .slide-card{ break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="sidebar">
+    <p class="brand">LHMH Exposure Review</p>
+    <p class="brand-sub">Talk script — full deck (31 slides)</p>
+    <p class="toc-group toc-rust">Opening &amp; framing</p>
+<ul class='toc-list'>
+<li><a href="#s1"><span class="toc-n">01</span>External Exposure &amp; PQC Readiness — Findings &amp; Prior…</a></li>
+<li><a href="#s2"><span class="toc-n">02</span>Understand externally observable risk and prioritize…</a></li>
+<li><a href="#s3"><span class="toc-n">03</span>The pattern is concentration, not a single flaw.</a></li>
+<li><a href="#s4"><span class="toc-n">04</span>Public-source discovery, then authorized bounded val…</a></li>
+<li><a href="#s5"><span class="toc-n">05</span>High here means observed exposure — not a proven exp…</a></li>
+</ul>
+<p class="toc-group toc-olive">Overview</p>
+<ul class='toc-list'>
+<li><a href="#s6"><span class="toc-n">06</span>Four hosting environments, one concentrated admin ho…</a></li>
+<li><a href="#s7"><span class="toc-n">07</span>Eight High findings, grouped by what they expose.</a></li>
+<li><a href="#s8"><span class="toc-n">08</span>Six Medium findings — hygiene gaps that widen the Hi…</a></li>
+<li><a href="#s9"><span class="toc-n">09</span>Chained, these findings shorten the path to guest da…</a></li>
+<li><a href="#s10"><span class="toc-n">10</span>What these findings touch, in business terms.</a></li>
+</ul>
+<p class="toc-group toc-mixed">Findings detail</p>
+<ul class='toc-list'>
+<li><a href="#s11"><span class="toc-n">11</span><span class="toc-fid rust">F-01</span> DMARC is absent on four of five brand domains.</a></li>
+<li><a href="#s12"><span class="toc-n">12</span><span class="toc-fid rust">F-02</span> lhmall.co.th is still LHMH&#x27;s — parked on Netway&#x27;s ow…</a></li>
+<li><a href="#s13"><span class="toc-n">13</span><span class="toc-fid rust">F-03</span> A self-signed certificate sits on terminal21.co.th&#x27;s…</a></li>
+<li><a href="#s14"><span class="toc-n">14</span><span class="toc-fid rust">F-04</span> Legacy services and a live database port on terminal…</a></li>
+<li><a href="#s15"><span class="toc-n">15</span><span class="toc-fid rust">F-05</span> Unauthenticated MySQL and cleartext admin logins on…</a></li>
+<li><a href="#s16"><span class="toc-n">16</span><span class="toc-fid rust">F-06</span> The shared platform carrying LHMH mail exposes an op…</a></li>
+<li><a href="#s17"><span class="toc-n">17</span><span class="toc-fid rust">F-07</span> Five hotel-ops admin apps run on an exposed Vite dev…</a></li>
+<li><a href="#s18"><span class="toc-n">18</span><span class="toc-fid rust">F-08</span> A dev/UAT cluster nobody has maintained since 2022 i…</a></li>
+<li><a href="#s19"><span class="toc-n">19</span><span class="toc-fid gold">F-09</span> Ten self-hosted admin consoles share one publicly re…</a></li>
+<li><a href="#s20"><span class="toc-n">20</span>Two WordPress sites, two different versions, two dif…</a></li>
+<li><a href="#s21"><span class="toc-n">21</span><span class="toc-fid gold">F-12</span> Session cookies are missing security flags across fi…</a></li>
+<li><a href="#s22"><span class="toc-n">22</span>Management ports open on the flagship host and on a…</a></li>
+</ul>
+<p class="toc-group toc-olive">PQC &amp; long horizon</p>
+<ul class='toc-list'>
+<li><a href="#s23"><span class="toc-n">23</span>Hybrid key exchange reduces HNDL risk — it is not fu…</a></li>
+<li><a href="#s24"><span class="toc-n">24</span>Only 3 of 26 endpoints negotiate hybrid key exchange…</a></li>
+<li><a href="#s25"><span class="toc-n">25</span>Data lifetime sets the migration window, not the thr…</a></li>
+</ul>
+<p class="toc-group toc-rust">Closing &amp; next steps</p>
+<ul class='toc-list'>
+<li><a href="#s26"><span class="toc-n">26</span>Confirm ownership first; everything else sequences b…</a></li>
+<li><a href="#s27"><span class="toc-n">27</span>Close the ownership questions first; everything else…</a></li>
+</ul>
+<p class="toc-group toc-mut">Appendix (reference only)</p>
+<ul class='toc-list'>
+<li><a href="#s28"><span class="toc-n">28</span>Grouped by function, to speed up follow-up.</a></li>
+<li><a href="#s29"><span class="toc-n">29</span>Why a missing DMARC record lets the domain be spoofe…</a></li>
+<li><a href="#s30"><span class="toc-n">30</span>Why traffic recorded today still matters years from…</a></li>
+<li><a href="#s31"><span class="toc-n">31</span>What was used, and what could not be reached this cy…</a></li>
+</ul>
+  </nav>
+
+  <main class="main">
+    <p class="kicker">Talk Script — Full Deck</p>
+    <h1>Presentation run-sheet</h1>
+    <p class="subhead">Speaker notes for all 31 slides, extracted directly from LHMH_Exposure_Presentation_v1.pptx — grouped to match the deck's narrative arc.</p>
+    <div class="meta-row">
+      <span class="pill">31 slides</span>
+      <span class="pill">~35&ndash;40 นาที เต็มรอบ</span>
+      <span class="pill">Language: Thai talk-track, English on-slide terms</span>
+    </div>
+
+    <div class="section-group" id="grp-rust-1">
+<h2 class="section-title rust">Opening &amp; framing</h2>
+
+<section class="slide-card" id="s1">
+  <div class="slide-head">
+    <span class="slide-num">01</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">COMPLIMENTARY EXTERNAL EXPOSURE REVIEW</p>
+      <h3>External Exposure &amp; PQC Readiness — Findings &amp; Prioritized Actions </h3>
+    </div>
+    <span class="pill">⏱ 1 นาที</span>
+  </div>
+  <div class="notes">
+    <p>เปิดด้วยการวางกรอบก่อนเข้าเนื้อหา — ประมาณ 1 นาที</p>
+<p><span class="q">&ldquo;สวัสดีครับ วันนี้ผมมานำเสนอผลของ External Exposure Review ที่ DCS ทำให้กับ LHMH โดยไม่มีค่าใช้จ่าย เป็นการต่อยอดจาก Threat &amp; Trend session ที่เราคุยกันก่อนหน้านี้&rdquo;</span></p>
+<p>ประเด็นที่ต้องพูดให้ชัดตั้งแต่ต้น เพื่อไม่ให้ทีม IT รู้สึกว่าถูกตรวจสอบ:<br>1. ทั้งหมดนี้ดูจากภายนอก จากข้อมูลสาธารณะ — ไม่ได้เข้าระบบ ไม่ได้ใช้ credential ใด ๆ<br>2. ข้อมูล ณ วันที่ 20 สิงหาคม 2026 เป็น point-in-time<br>3. เป้าหมายคือ <span class="q">&ldquo;ช่วยจัดลำดับความสำคัญ&rdquo;</span> ไม่ใช่การให้คะแนน</p>
+<p>ถ้ามี CISO หรือ CIO อยู่ในห้อง ให้บอกล่วงหน้าว่าสไลด์ 3 คือหน้าเดียวที่ต้องจำ</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s2">
+  <div class="slide-head">
+    <span class="slide-num">02</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">PURPOSE OF THIS REVIEW</p>
+      <h3>Understand externally observable risk and prioritize the next actions. </h3>
+    </div>
+    <span class="pill">⏱ 1.5 นาที</span>
+  </div>
+  <div class="notes">
+    <p>วางกรอบว่า <span class="q">&ldquo;นี่คืออะไร และไม่ใช่อะไร&rdquo;</span> — 1.5 นาที</p>
+<p>เน้นสองประโยคนี้:<br><span class="q">&ldquo;สิ่งที่เห็นในรายงานนี้ คือสิ่งที่คนภายนอกเห็นได้อยู่แล้ววันนี้ เราแค่รวบรวมมาให้เป็นระบบ&rdquo;</span><br><span class="q">&ldquo;และนี่ไม่ใช่ penetration test ครับ — เราไม่ได้พยายาม login ไม่ได้ใช้ credential ไม่ได้ทดสอบช่องโหว่&rdquo;</span></p>
+<p>ถ้าลูกค้าถามว่า <span class="q">&ldquo;แล้วทีมเราจะเห็น log ไหม&rdquo;</span> — ตอบตรง ๆ ว่าอาจเห็น connection log ธรรมดาจาก firewall/WAF ในวันที่ 20 ส.ค. เพราะเรามีการ validate แบบ read-only ครั้งเดียวต่อ finding</p>
+<p>Highlight ที่ต่างจากรอบก่อน: รอบนี้ทุก finding ผ่านการ validate แล้ว 14 จาก 14 รายการ — ไม่มีข้อไหนที่ยังค้างเป็น Inconclusive</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s3">
+  <div class="slide-head">
+    <span class="slide-num">03</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">EXECUTIVE INSIGHT</p>
+      <h3>The pattern is concentration, not a single flaw. </h3>
+    </div>
+    <span class="pill">⏱ 3-4 นาที</span>
+  </div>
+  <div class="notes">
+    <p>หน้าที่สำคัญที่สุดของ deck — ใช้เวลา 3-4 นาที ถ้าผู้บริหารอยู่แค่ 5 นาที ให้พูดหน้านี้หน้าเดียว</p>
+<p>ประโยคหลัก: <span class="q">&ldquo;ปัญหาไม่ใช่ช่องโหว่ร้ายแรงจุดเดียว แต่คือการกระจุกตัว — ระบบจัดการหลายสิบตัวไปรวมอยู่บน host เดียวกัน โดยมีแค่ login ของแต่ละตัวเป็นด่านเดียว ไม่มี network layer กั้น&rdquo;</span></p>
+<p>สามเสาที่ต้องเล่า:<br>1. Concentration — 15 consoles บน 49.231.128.108 (F-07 + F-09)<br>2. Data path — MySQL ตอบ handshake โดยไม่มี host restriction บน 3 platform ที่แยกกันคนละเจ้า (F-04, F-05, F-06) นี่คือข้อที่ผมกังวลที่สุด<br>3. Forgotten assets — dev/UAT cluster ที่มี 6 แอปยังรันอยู่ และ certificate หมดอายุตั้งแต่ปี 2022 (F-08) แปลว่าไม่มีใครดูแลมาเกือบ 4 ปี แต่ยังเข้าถึงได้จากอินเทอร์เน็ต</p>
+<p>จุดที่ต้องพูดให้เป็นบวก: terminal21.co.th ทำ DMARC p=reject ได้แล้ว — มี model ที่ดีอยู่ในบ้านแล้ว แค่ยังไม่ได้ขยายไปโดเมนอื่น</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s4">
+  <div class="slide-head">
+    <span class="slide-num">04</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">ASSESSMENT METHODOLOGY &amp; SCOPE</p>
+      <h3>Public-source discovery, then authorized bounded validation. </h3>
+    </div>
+    <span class="pill">⏱ 2 นาที</span>
+  </div>
+  <div class="notes">
+    <p>อธิบายวิธีทำ — 2 นาที ควรพูดให้จบเร็ว แต่ห้ามข้าม เพราะเป็นหน้าที่สร้างความน่าเชื่อถือ</p>
+<p>เดินตาม 4 ขั้น: Discover → Map → Validate → Prioritize</p>
+<p>ประเด็นที่ต้องพูดชัด (ถ้าลูกค้าเป็นสายเทคนิคจะถามแน่นอน):<br>- ขั้นตอน passive/EASM รันจาก cloud sandbox ซึ่งบล็อก outbound port ที่ไม่ใช่ 80/443 ทำให้ตอนแรก validate port อื่นไม่ได้<br>- เราจึงรัน pass ที่สองจาก network ของ operator เอง ทำให้ข้อมูล TLS, certificate, PQC และ open port ทั้งหมดมาจาก server ของ LHMH โดยตรง ไม่ผ่าน proxy<br>- ผลคือ 14 จาก 14 finding = Confirmed</p>
+<p>ย้ำ boundary: ไม่มี exploitation, ไม่มี authentication, ไม่มี brute force, ไม่มี crawling/fuzzing — connection เดียวต่อ finding</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s5">
+  <div class="slide-head">
+    <span class="slide-num">05</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">HOW TO READ THE RATINGS</p>
+      <h3>High here means observed exposure — not a proven exploit. </h3>
+    </div>
+    <span class="pill">⏱ 1.5 นาที</span>
+  </div>
+  <div class="notes">
+    <p>หน้านี้ป้องกันความเข้าใจผิดสองทางพร้อมกัน — 1.5 นาที ห้ามข้าม</p>
+<p>ประเด็นที่ 1 (กัน panic): <span class="q">&ldquo;High ในรายงานนี้ ไม่เท่ากับ CVSS Critical นะครับ เพดานของ methodology นี้คือ High เพราะเป็น external snapshot ไม่ใช่ pentest — เราไม่ได้พิสูจน์ว่า exploit ได้จริง&rdquo;</span></p>
+<p>ประเด็นที่ 2 (กันประมาท): <span class="q">&ldquo;แต่ High ทุกข้อในนี้ Verified และ Confirmed หมดแล้ว ไม่ใช่การเดา&rdquo;</span></p>
+<p>อธิบายว่า Severity กับ Status เป็นคนละแกน:<br>- Severity = ผลกระทบถ้าถูกใช้ประโยชน์<br>- Status = ความมั่นใจในหลักฐาน</p>
+<p>และ Planning Indicator สำหรับ PQC ไม่ใช่ช่องโหว่ — RSA/ECC วันนี้เป็นเรื่องปกติ เราแค่ label ไว้เป็น migration candidate</p>
+  </div>
+</section>
+
+</div>
+<div class="section-group" id="grp-olive-6">
+<h2 class="section-title olive">Overview</h2>
+
+<section class="slide-card" id="s6">
+  <div class="slide-head">
+    <span class="slide-num">06</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">EXTERNAL EXPOSURE MAP</p>
+      <h3>Four hosting environments, one concentrated admin host. </h3>
+    </div>
+    <span class="pill">⏱ 2-3 นาที</span>
+  </div>
+  <div class="notes">
+    <p>หน้านี้คือภาพรวมโครงสร้างที่ทำให้ทุกอย่างต่อจากนี้เข้าใจง่ายขึ้น — 2-3 นาที</p>
+<p>ชี้ไปที่กล่องซ้ายบนก่อน: <span class="q">&ldquo;49.231.128.108 คือ host เดียว แต่มี 15 console อยู่บนนั้น ทั้งเครื่องมือ DevOps และแอปที่ใช้งานจริงในโรงแรม&rdquo;</span></p>
+<p>จากนั้นเล่าว่ามี 4 กลุ่ม:<br>1. Shared admin host — จุดที่ควรเริ่มก่อน<br>2. Database ports — 3 platform คนละเจ้ากันโดยสิ้นเชิง แสดงว่าไม่ใช่ความผิดพลาดจุดเดียว แต่เป็น baseline ที่ยังไม่มี<br>3. CDN edge — ได้ PQC มาฟรีจาก provider 3 endpoint<br>4. Forgotten / stale — dev cluster และ host ที่ไม่มี vhost แล้ว</p>
+<p>ถ้าลูกค้าถามว่า <span class="q">&ldquo;ทำไมมี host เยอะขนาดนี้&rdquo;</span> — ตอบว่าเป็นเรื่องปกติขององค์กรที่โตแบบหลาย brand หลาย environment ประเด็นคือ hardening baseline ตามไม่ทัน ไม่ใช่ว่าทีมทำผิด</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s7">
+  <div class="slide-head">
+    <span class="slide-num">07</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">FINDINGS AT A GLANCE — HIGH</p>
+      <h3>Eight High findings, grouped by what they expose. </h3>
+    </div>
+    <span class="pill">⏱ 2 นาที</span>
+  </div>
+  <div class="notes">
+    <p>ตารางสรุป HIGH ทั้ง 8 ข้อ — 2 นาที อย่าอ่านทุกบรรทัด</p>
+<p>วิธีพูด: <span class="q">&ldquo;ผมจะไม่อ่านทั้งตารางนะครับ ขอชี้ 3 ข้อที่อยากให้เริ่มก่อน&rdquo;</span><br>- F-07 กับ F-08 — เร่งด่วนที่สุด เพราะแตะระบบที่ใช้งานจริง (hotel ops) และ asset ที่ถูกลืม<br>- F-01 — แก้เสร็จวันเดียว เป็น quick win ที่ควรทำคู่ขนานไปเลย<br>- F-04/05/06 — database port สามเจ้า ต้องคุยกับทั้งทีมในและ vendor</p>
+<p>ชี้ให้เห็นว่า ID ในสไลด์นี้ตรงกับรายงาน PDF ทุกตัว จะได้เปิดตามได้</p>
+<p>ถ้าถูกถาม <span class="q">&ldquo;ทำไม F-06 ถึงเป็น vendor review&rdquo;</span> — เพราะเป็น shared hosting ของ Netway LHMH แก้เองไม่ได้ ต้องขอ remediation timeline</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s8">
+  <div class="slide-head">
+    <span class="slide-num">08</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">FINDINGS AT A GLANCE — MEDIUM</p>
+      <h3>Six Medium findings — hygiene gaps that widen the High ones. </h3>
+    </div>
+    <span class="pill">⏱ 1.5 นาที</span>
+  </div>
+  <div class="notes">
+    <p>ตาราง MEDIUM 6 ข้อ — 1.5 นาที เร็วกว่าหน้า HIGH</p>
+<p>วิธีพูด: <span class="q">&ldquo;กลุ่มนี้ไม่เร่งด่วนเท่า แต่เป็นงาน hygiene ที่ถ้าปล่อยไว้จะกลายเป็นทางเข้าเสริมให้กลุ่ม High&rdquo;</span></p>
+<p>จุดที่ควรเน้น:<br>- F-09 คือ 10 console บน host เดียวกับ F-07 — แก้ทีเดียวได้ทั้งคู่ด้วยการวางหลัง VPN<br>- F-11 REST API เปิดเผย username admin ซึ่งช่วยคนโจมตีโดยตรงในการทำ password spray<br>- F-14 เป็น shared VPS ของบุคคลที่สาม ไม่ใช่ความผิดของ LHMH — แต่ต้องยืนยันก่อนว่า LHMH คุมเครื่องนี้เองหรือเปล่า</p>
+<p>ให้สังเกตว่า F-10 กับ F-11 เป็น WordPress ทั้งคู่ แต่คนละเว็บ คนละเวอร์ชัน — เป็นสัญญาณว่า patch cadence ไม่ได้รวมศูนย์</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s9">
+  <div class="slide-head">
+    <span class="slide-num">09</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">WHY IT MATTERS</p>
+      <h3>Chained, these findings shorten the path to guest data. </h3>
+    </div>
+    <span class="pill">⏱ 3 นาที</span>
+  </div>
+  <div class="notes">
+    <p>หน้านี้คือหน้าที่ทำให้ผู้บริหารเข้าใจว่า <span class="q">&ldquo;แล้วยังไง&rdquo;</span> — 3 นาที เล่าเป็นเรื่อง อย่าอ่านกล่อง</p>
+<p>เล่าแบบนี้: <span class="q">&ldquo;ถ้าผมเป็นคนที่สนใจข้อมูลลูกค้าของ LHMH วันนี้ ผมจะเริ่มยังไง&rdquo;</span><br>ขั้น 1 — ไม่ต้องแฮ็กอะไรเลย ข้อมูลโครงสร้างอยู่ใน CT log และ DNS อยู่แล้ว แถม REST API ยังบอก username มาให้<br>ขั้น 2 — เลือกประตูที่อ่อนที่สุด: แอป hotel ops ที่รันบน dev server ซึ่งอาจ serve source map และเปิด HMR WebSocket<br>ขั้น 3 — ไม่ต้องผ่านแอปด้วยซ้ำ เพราะ MySQL ตอบ connection ตรง ๆ อยู่บน host เดียวกัน<br>ขั้น 4 — ถ้าอยากอยู่นาน ก็ไปอยู่บน dev cluster ที่ไม่มีใครดูมาตั้งแต่ปี 2022</p>
+<p>*** สำคัญมาก — ต้องพูดประโยคนี้ให้ชัด ***<br><span class="q">&ldquo;ทั้งหมดนี้เป็นการเรียงลำดับ finding ที่เรายืนยันแล้วเท่านั้น เราไม่ได้ทดลองทำจริงแม้แต่ขั้นเดียว ไม่ได้ login ไม่ได้ query database&rdquo;</span> — ถ้าไม่พูด ลูกค้าอาจเข้าใจว่าเราเจาะเข้าไปแล้ว</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s10">
+  <div class="slide-head">
+    <span class="slide-num">10</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">BUSINESS RELEVANCE</p>
+      <h3>What these findings touch, in business terms. </h3>
+    </div>
+    <span class="pill">⏱ 2-3 นาที</span>
+  </div>
+  <div class="notes">
+    <p>แปลงเรื่องเทคนิคเป็นภาษาธุรกิจ — 2-3 นาที หน้านี้เหมาะกับผู้บริหารสายธุรกิจมากที่สุด</p>
+<p>เดินตามแถว โดยเชื่อมกับธุรกิจของ LHMH โดยตรง:<br>- แถว 1: PMS กับ room service admin คือระบบที่แตะข้อมูลผู้เข้าพัก ถ้าหลุดคือ PDPA<br>- แถว 2: DMARC — โดเมนแบรนด์อย่าง Terminal21 กับ Grande Centre Point ถูกปลอมเป็นผู้ส่งได้ ซึ่งกระทบทั้งลูกค้าและคู่ค้า<br>- แถว 3: console จัดการ container เปิดอยู่ = ความเสี่ยงต่อความต่อเนื่องของการดำเนินงาน ไม่ใช่แค่ข้อมูล<br>- แถว 4: Netway ถือ mail flow อยู่ แต่ platform มี MySQL เปิด — เป็น vendor risk ที่ต้องมี timeline<br>- แถว 5: PQC เป็นเรื่องระยะยาว ข้อมูลที่ต้องเก็บความลับหลายปีคือส่วนที่เกี่ยวข้อง</p>
+<p>*** ต้องพูด caveat *** <span class="q">&ldquo;ตารางนี้คือการตีความของ DCS จาก finding ที่ยืนยันแล้ว ไม่ใช่การประเมินมูลค่าความเสียหาย และไม่ใช่การตัดสินว่า LHMH ผ่านหรือไม่ผ่าน PDPA / PCI-DSS ครับ&rdquo;</span></p>
+  </div>
+</section>
+
+</div>
+<div class="section-group" id="grp-mixed-11">
+<h2 class="section-title mixed">Findings detail</h2>
+
+<section class="slide-card" id="s11">
+  <div class="slide-head">
+    <span class="slide-num">11</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">EMAIL-DOMAIN TRUST</p>
+      <h3>DMARC is absent on four of five brand domains. <span class="fid rust">F-01 &middot; HIGH</span></h3>
+    </div>
+    <span class="pill">⏱ 2 นาที</span>
+  </div>
+  <div class="notes">
+    <p>F-01 — quick win ที่ควรเริ่มวันแรก — 2 นาที</p>
+<p>พูดสั้น ๆ: <span class="q">&ldquo;ข้อนี้แก้ได้เร็วที่สุดในรายงานทั้งฉบับ เป็นการเพิ่ม DNS TXT record หนึ่งบรรทัดต่อโดเมน&rdquo;</span></p>
+<p>ประเด็นที่ทำให้ลูกค้ายอมรับง่าย: terminal21.co.th ทำได้แล้วและตั้ง p=reject ด้วยซ้ำ แปลว่าในองค์กรมี know-how อยู่แล้ว แค่ยังไม่ขยายไปโดเมนอื่น — เป็นการชมไม่ใช่ตำหนิ</p>
+<p>เตือนให้เริ่มที่ p=none ก่อนเสมอ อย่ากระโดดไป reject เพราะอาจทำให้อีเมลที่ถูกต้อง เช่น ระบบ booking หรือ marketing platform ถูก block</p>
+<p>ถ้ามีเวลา ให้เปิด Appendix หน้า DMARC diagram ประกอบ จะอธิบายได้ใน 30 วินาที</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s12">
+  <div class="slide-head">
+    <span class="slide-num">12</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">CERTIFICATE HYGIENE — UPDATED 2026-08-25</p>
+      <h3>lhmall.co.th is still LHMH&#x27;s — parked on Netway&#x27;s own page. <span class="fid rust">F-02 &middot; HIGH</span></h3>
+    </div>
+    <span class="pill">⏱ 2 นาที</span>
+  </div>
+  <div class="notes">
+    <p>F-02 — 2 นาที — อัปเดตหลังการประชุมครั้งก่อน มีหลักฐานใหม่ที่เปลี่ยนคำแนะนำทั้งหมด</p>
+<p>ประโยคเปิด: <span class="q">&ldquo;ข้อนี้เราตรวจเพิ่มหลังจากรายงานฉบับแรกครับ เพราะมีคำถามว่าโดเมนนี้ยังเป็นของ LHMH อยู่ไหม&rdquo;</span></p>
+<p>เล่าลำดับการตรวจสอบ 2 ขั้น: (1) เช็ค RDAP ของ THNIC โดยตรง — พบว่าโดเมนยัง active จ่ายล่วงหน้าถึงปี 2029 และ nameserver ยังเป็นของ Netway อยู่ (2) เปิดเว็บดูจริง พบเป็นหน้า parking page ของ SiamDomain ซึ่งเป็นแบรนด์ของ Netway เอง</p>
+<p>สรุปให้ลูกค้าฟังชัด ๆ: <span class="q">&ldquo;ไม่ได้หลุดมือไปไหนครับ ยังเป็นของ LHMH ตามกฎหมาย แค่ไม่มีใครสั่ง Netway ให้ทำอะไรกับมัน เลยถูกปล่อยเป็นหน้า default ของเขาไปเอง&rdquo;</span></p>
+<p>คำถามที่ต้องถามกลับในห้องประชุม: <span class="q">&ldquo;ธุรกิจยังอยากใช้โดเมนนี้อยู่ไหม&rdquo;</span> — ถ้าไม่ใช้แล้ว แนะนำแค่ทำ redirect ไปเว็บหลัก ถ้าอยากใช้ต่อค่อยขอ certificate ใหม่</p>
+<p>ย้ำจุดที่ต้องพูดให้ชัด: ไม่ต้องกังวลเรื่องต่ออายุเลย จ่ายไว้ล่วงหน้าถึงปี 2029 แล้ว และไม่ต้องเข้ากระบวนการกฎหมายใด ๆ เพราะไม่มีการแย่งชิงโดเมนเกิดขึ้นจริง</p>
+<p>เชื่อมกับ F-06 ได้เหมือนเดิม เพราะเป็น platform เดียวกัน (203.78.107.47) — ถ้าจะคุยกับ Netway เรื่องนี้ ควรคุยพร้อมกับเรื่อง MySQL ที่เปิดอยู่ใน F-06 ไปในการติดต่อครั้งเดียว</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s13">
+  <div class="slide-head">
+    <span class="slide-num">13</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">CERTIFICATE HYGIENE</p>
+      <h3>A self-signed certificate sits on terminal21.co.th&#x27;s mail ports. <span class="fid rust">F-03 &middot; HIGH</span></h3>
+    </div>
+    <span class="pill">⏱ 1.5 นาที</span>
+  </div>
+  <div class="notes">
+    <p>F-03 — 1.5 นาที</p>
+<p>ประเด็นหลัก: <span class="q">&ldquo;certificate ตัวนี้ไม่ได้ออกโดย CA และชื่อไม่ตรงกับโดเมน มันคือ default ที่ติดมากับ DirectAdmin&rdquo;</span></p>
+<p>อธิบายว่าทำไมถึงเป็น High ไม่ใช่แค่ cosmetic: เพราะ mail client จะเตือน แล้วผู้ใช้จะถูกฝึกให้กด <span class="q">&ldquo;trust anyway&rdquo;</span> ซึ่งเป็นการทำลายสัญญาณเตือนที่จะใช้จับ MITM จริง ๆ ในอนาคต</p>
+<p>ข้อดีคือแก้ไม่ยาก — Let's Encrypt ใช้อยู่แล้วบน host อื่นในเครือ</p>
+<p>คำถามที่ควรถามลูกค้า: <span class="q">&ldquo;terminal21.co.th ใช้ DirectAdmin เป็นเส้นทางเมลหลักอยู่จริงไหม หรือย้ายไป M365 หมดแล้ว&rdquo;</span> เพราะจาก MX record เห็นทั้งสองอย่างปนกัน</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s14">
+  <div class="slide-head">
+    <span class="slide-num">14</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">EXPOSED SERVICES</p>
+      <h3>Legacy services and a live database port on terminal21&#x27;s origin. <span class="fid rust">F-04 &middot; HIGH</span></h3>
+    </div>
+    <span class="pill">⏱ 2 นาที</span>
+  </div>
+  <div class="notes">
+    <p>F-04 — 2 นาที</p>
+<p>เป็น host ที่รวมปัญหาหลายอย่าง: legacy version + database port + self-signed cert (F-03) + ไม่มี TLS 1.3 (PQC-04) ทั้งหมดอยู่บนเครื่องเดียวกันที่ OVH ฝรั่งเศส</p>
+<p>ต้องให้เครดิตลูกค้าตรงนี้: MariaDB มี client-IP restriction อยู่จริง เราเห็นกับตา — ต่างจาก F-05 กับ F-06 ที่ไม่มีเลย พูดตรงนี้จะทำให้ลูกค้ารู้สึกว่าเราประเมินอย่างเป็นธรรม</p>
+<p>จุดที่ต้องเน้น: OpenSSH 7.4 คือรุ่นปี 2016 ประมาณ 10 ปีแล้ว</p>
+<p>ระวังคำถาม <span class="q">&ldquo;มี CVE อะไรบ้าง&rdquo;</span> — ตอบตรง ๆ ว่าเราไม่อ้าง CVE เพราะเรายืนยัน version จากแหล่งเดียว (banner) ยังไม่ได้ corroborate จากแหล่งที่สอง เป็นนโยบายของรายงานนี้</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s15">
+  <div class="slide-head">
+    <span class="slide-num">15</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">EXPOSED SERVICES</p>
+      <h3>Unauthenticated MySQL and cleartext admin logins on apps-hk. <span class="fid rust">F-05 &middot; HIGH</span></h3>
+    </div>
+    <span class="pill">⏱ 2 นาที</span>
+  </div>
+  <div class="notes">
+    <p>F-05 — 2 นาที — ข้อที่ผมกังวลรองจาก F-07/F-08</p>
+<p>จุดต่างที่ต้องพูดให้ชัด: MySQL บน host นี้ <span class="q">&ldquo;ไม่มี&rdquo;</span> host restriction ต่างจาก F-04 ที่มี — พูดเทียบกันจะเห็นภาพทันที</p>
+<p>ประเด็น cleartext: login page เสิร์ฟผ่าน HTTP ธรรมดาบน port 81 และ 8089 แปลว่าถ้ามีคนกรอกรหัสผ่านผ่านช่องทางนั้น รหัสวิ่งเป็น plaintext</p>
+<p>Portainer ตัวที่ 3: ก่อนหน้านี้เรารู้ว่ามี 2 ตัวบน host อื่น (F-09) ตัวนี้เพิ่งเจอ — สื่อว่า inventory ของเครื่องมือ DevOps ยังไม่ครบ ซึ่งเป็นประเด็นเชิงกระบวนการมากกว่าเชิงเทคนิค</p>
+<p>ย้ำว่าเราไม่ได้ลอง login และไม่ได้ query database</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s16">
+  <div class="slide-head">
+    <span class="slide-num">16</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">THIRD-PARTY PLATFORM RISK</p>
+      <h3>The shared platform carrying LHMH mail exposes an open MySQL port. <span class="fid rust">F-06 &middot; HIGH</span></h3>
+    </div>
+    <span class="pill">⏱ 2 นาที</span>
+  </div>
+  <div class="notes">
+    <p>F-06 — 2 นาที — วิธีนำเสนอสำคัญกว่าตัวเนื้อหา</p>
+<p>ต้องกรอบให้ถูก: <span class="q">&ldquo;ข้อนี้ไม่ใช่ความผิดของทีม LHMH ครับ เป็น platform ของ Netway แต่ผลกระทบตกที่ LHMH เพราะ mail flow วิ่งผ่านที่นี่&rdquo;</span></p>
+<p>ระวัง: เราไม่ได้ยืนยันว่าใน database นั้นมีข้อมูลของ LHMH หรือเปล่า — เรายืนยันแค่ว่า port ตอบ handshake โดยไม่มี host restriction ห้ามพูดเกินกว่านี้</p>
+<p>สิ่งที่ควรผลักดันในห้องประชุม: ให้ตั้งเป็น vendor-risk item อย่างเป็นทางการ และขอ remediation timeline เป็นลายลักษณ์อักษร ไม่ใช่แค่แจ้งด้วยวาจา</p>
+<p>เชื่อมกับ F-02: platform เดียวกัน IP เดียวกัน — ถ้าจะคุยกับ Netway ควรคุยสองเรื่องพร้อมกันในครั้งเดียว</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s17">
+  <div class="slide-head">
+    <span class="slide-num">17</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">BUSINESS-APPLICATION EXPOSURE</p>
+      <h3>Five hotel-ops admin apps run on an exposed Vite dev server. <span class="fid rust">F-07 &middot; HIGH</span></h3>
+    </div>
+    <span class="pill">⏱ 3 นาที</span>
+  </div>
+  <div class="notes">
+    <p>F-07 — 3 นาที — ข้อที่เร่งด่วนที่สุดในรายงาน ควรใช้เวลามากที่สุด</p>
+<p>ทำไมถึงเร่งด่วนกว่าข้ออื่น: เพราะแตะ <span class="q">&ldquo;ระบบที่โรงแรมใช้งานจริง&rdquo;</span> ไม่ใช่แค่เครื่องมือ DevOps — Room Service admin กับ PMS control</p>
+<p>อธิบาย Vite dev server ให้คนไม่ใช่ dev เข้าใจ: <span class="q">&ldquo;เวลานักพัฒนาเขียนโค้ด เขาจะรัน server แบบพิเศษที่ออกแบบมาให้แก้โค้ดแล้วเห็นผลทันที server ตัวนั้นไม่ได้ออกแบบมาให้เปิดสู่อินเทอร์เน็ต มันอาจส่ง source code ที่ยังไม่ถูกบีบอัด และเปิด WebSocket ค้างไว้&rdquo;</span></p>
+<p>สิ่งที่เราไม่ได้ยืนยัน: ไม่รู้ว่า login ของแอปบังคับจริงหรือเปล่า เพราะ form ถูก render ฝั่ง client — ต้องพูดตรงนี้ ไม่งั้นจะเป็นการ overclaim</p>
+<p>Action ที่อยากได้จากห้องประชุมนี้: ให้ระบุคนที่ดูแลแอปกลุ่มนี้ และนัดคุยภายในสัปดาห์นี้</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s18">
+  <div class="slide-head">
+    <span class="slide-num">18</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">FORGOTTEN ASSETS</p>
+      <h3>A dev/UAT cluster nobody has maintained since 2022 is still live. <span class="fid rust">F-08 &middot; HIGH</span></h3>
+    </div>
+    <span class="pill">⏱ 3 นาที</span>
+  </div>
+  <div class="notes">
+    <p>F-08 — 3 นาที — ข้อที่มี narrative แรงที่สุด ใช้เล่าเป็นเรื่องได้ดี</p>
+<p>ประโยคเปิดที่ได้ผล: <span class="q">&ldquo;host กลุ่มนี้ certificate หมดอายุตั้งแต่ธันวาคม 2022 ครับ เกือบสี่ปีแล้ว แต่ยังเข้าถึงได้จากอินเทอร์เน็ต และยังมี 6 แอปรันอยู่&rdquo;</span></p>
+<p>เรื่องที่น่าสนใจและควรพูด: เราหา host กลุ่มนี้ไม่เจอจาก enumeration ของรอบนี้เอง — terminal21.co.th ใช้ wildcard certificate ทำให้ subdomain แต่ละตัวไม่ปรากฏใน CT log เราเจอเพราะไป cross-check กับ snapshot รอบก่อน</p>
+<p>ประเด็นเชิงกระบวนการที่ต้องขาย: นี่คือเหตุผลว่าทำไม snapshot ครั้งเดียวไม่พอ ต้องมี continuous EASM — โยงไปหน้า Next Steps ได้เลย</p>
+<p>FeathersJS: บอกว่าเป็น framework ที่สร้าง REST/WebSocket endpoint ให้อัตโนมัติ เราไม่ได้ไปไล่ดู แต่แปลว่าพื้นที่เสี่ยงอาจกว้างกว่าหน้า landing page</p>
+<p>Action ที่อยากได้: ตอบให้ได้ก่อนว่า <span class="q">&ldquo;ใครเป็นเจ้าของ&rdquo;</span> — ถ้าไม่มีใครตอบได้ นั่นคือคำตอบในตัวมันเอง</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s19">
+  <div class="slide-head">
+    <span class="slide-num">19</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">ADMINISTRATIVE &amp; DEVOPS TOOLING</p>
+      <h3>Ten self-hosted admin consoles share one publicly reachable host. <span class="fid gold">F-09 &middot; MEDIUM</span></h3>
+    </div>
+    <span class="pill">⏱ 2 นาที</span>
+  </div>
+  <div class="notes">
+    <p>F-09 — 2 นาที</p>
+<p>กรอบการเล่า: <span class="q">&ldquo;ไม่มีข้อมูลรั่วจากการตรวจครั้งนี้ และทุกตัวมี login จริง แต่ประเด็นคือจำนวน&rdquo;</span></p>
+<p>เหตุผลว่าทำไมสำคัญ: 10 ระบบ = 10 ชุด credential = 10 โอกาสที่จะมีตัวใดตัวหนึ่งใช้รหัสผ่านเดิม หรือยังไม่ได้ patch และหลายตัวถ้าถูกยึด = คุมทั้ง infrastructure ได้เลย เช่น Portainer, code-server, n8n</p>
+<p>ให้เครดิต: Node-RED admin API และ code-server บังคับ auth อยู่แล้ว ทีมทำถูกในสองตัวนี้</p>
+<p>ข้อเสนอที่ practical ที่สุด: ไม่ต้องปิดทุกตัว แค่ย้ายไปหลัง VPN หรือ IP allow-list ก็ลดพื้นที่เสี่ยงได้ทันที แล้วค่อยคุยเรื่อง SSO ในระยะยาว</p>
+<p>โยงกับ F-07: host เดียวกัน แก้ทีเดียวได้ทั้งสองข้อ</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s20">
+  <div class="slide-head">
+    <span class="slide-num">20</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">APPLICATION HARDENING</p>
+      <h3>Two WordPress sites, two different versions, two different gaps. </h3>
+    </div>
+    <span class="pill">⏱ 2 นาที</span>
+  </div>
+  <div class="notes">
+    <p>F-10 กับ F-11 — 2 นาที รวมสองข้อในหน้าเดียวเพราะเป็นเรื่องเดียวกันคนละเว็บ</p>
+<p>ประเด็นที่อยากให้ลูกค้าเห็น: WordPress สองตัว คนละเว็บ คนละเวอร์ชัน ทั้งคู่เก่า และ hardening ก็คนละแบบ — lhmh บล็อก wp-login แต่ terminal21 ไม่บล็อก ส่วน terminal21 บล็อก XML-RPC แต่ lhmh ไม่บล็อก</p>
+<p>แปลว่าอะไร: <span class="q">&ldquo;แต่ละเว็บมีคนดูแลคนละทีม ต่างคนต่างทำดีคนละมุม แต่ไม่มี baseline กลาง&rdquo;</span> — นี่คือ message เชิงกระบวนการที่ควรขาย</p>
+<p>ข้อที่ควรเน้นที่สุด: REST API บน terminal21 คืน username <span class="q">&ldquo;admin&rdquo;</span> มาให้โดยไม่ต้อง auth ซึ่งช่วยคนโจมตีไปครึ่งทางในการทำ password spray เพราะเหลือแค่เดารหัสผ่าน</p>
+<p>PHP 7.0.33 หมด support ตั้งแต่ธันวาคม 2018</p>
+<p>ห้ามอ้าง CVE เฉพาะเจาะจง — เรายืนยัน version จาก banner แหล่งเดียว</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s21">
+  <div class="slide-head">
+    <span class="slide-num">21</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">APPLICATION HARDENING</p>
+      <h3>Session cookies are missing security flags across five hosts. <span class="fid gold">F-12 &middot; MEDIUM</span></h3>
+    </div>
+    <span class="pill">⏱ 1.5 นาที</span>
+  </div>
+  <div class="notes">
+    <p>F-12 — 1.5 นาที — ข้อที่แก้ง่ายที่สุดกลุ่มหนึ่ง</p>
+<p>พูดสั้น: <span class="q">&ldquo;เป็น config หนึ่งบรรทัดในแต่ละแอป ไม่ใช่การแก้สถาปัตยกรรม&rdquo;</span></p>
+<p>อธิบาย flag ให้เข้าใจเร็ว:<br>- Secure = ห้ามส่ง cookie ผ่าน HTTP ธรรมดา<br>- HttpOnly = ห้าม JavaScript อ่าน cookie ซึ่งจำกัดความเสียหายถ้ามี XSS<br>- SameSite = ลดความเสี่ยง CSRF</p>
+<p>ที่ต้องระวัง: อย่าไปบอกว่า <span class="q">&ldquo;เว็บนี้มี XSS&rdquo;</span> เราไม่ได้ทดสอบ XSS เลย เราดูแค่ว่า cookie ตั้ง flag ครบไหม</p>
+<p>ข้อสังเกตที่ควรพูด: มี session cookie 3 ชื่อต่างกันบน 5 host แปลว่าเป็นคนละแอป คนละทีม — ต้องประสานหลายเจ้า ไม่ใช่แก้จุดเดียว</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s22">
+  <div class="slide-head">
+    <span class="slide-num">22</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">MANAGEMENT-PLANE EXPOSURE</p>
+      <h3>Management ports open on the flagship host and on a shared VPS. </h3>
+    </div>
+    <span class="pill">⏱ 2 นาที</span>
+  </div>
+  <div class="notes">
+    <p>F-13 กับ F-14 — 2 นาที รวมหน้าเพราะเป็นเรื่อง management port เหมือนกัน แต่คนละเจ้าของ</p>
+<p>F-13 — เป็นเครื่องของ LHMH เองบน Google Cloud ดังนั้น LHMH แก้ได้เลย ไม่ต้องรอใคร<br>ให้เครดิต: SSH เป็นรุ่นปัจจุบันที่ Ubuntu ดูแลอยู่ (8.2p1) และ FTP ปิด anonymous แล้ว<br>และ port 888 ที่ Shodan เคยระบุว่าเป็น self-signed TLS จริง ๆ แล้วตอนนี้เป็น nginx คืน 403 ธรรมดา — เป็นตัวอย่างที่ดีว่าทำไมต้อง validate ไม่ใช่เชื่อ index</p>
+<p>F-14 — ไม่ใช่เครื่องของ LHMH โดยตรง เป็น shared VPS ของบุคคลที่สาม<br>ต้องพูดให้ชัดว่า <span class="q">&ldquo;ข้อนี้อาจไม่ใช่ action ของ LHMH เลยก็ได้ ขึ้นกับว่า LHMH คุมเครื่องนี้เองหรือเปล่า&rdquo;</span><br>แต่ที่น่ากังวลในเชิงหลักการ: Proxmox คือ hypervisor console ถ้าถูกยึด กระทบทุก VM บน node นั้น ไม่ใช่แค่ของ LHMH</p>
+<p>คำถามที่ต้องได้คำตอบ: <span class="q">&ldquo;www2.lhmall.co.th นี่ LHMH เช่า VPS เองหรือ vendor จัดให้ครับ&rdquo;</span></p>
+  </div>
+</section>
+
+</div>
+<div class="section-group" id="grp-olive-23">
+<h2 class="section-title olive">PQC &amp; long horizon</h2>
+
+<section class="slide-card" id="s23">
+  <div class="slide-head">
+    <span class="slide-num">23</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">PQC RISK &amp; READINESS LEVELS</p>
+      <h3>Hybrid key exchange reduces HNDL risk — it is not full readiness. </h3>
+    </div>
+    <span class="pill">⏱ 3 นาที</span>
+  </div>
+  <div class="notes">
+    <p>เริ่มส่วน PQC — 3 นาที เปลี่ยนโหมดจาก <span class="q">&ldquo;ปัญหาวันนี้&rdquo;</span> เป็น <span class="q">&ldquo;การวางแผนระยะยาว&rdquo;</span></p>
+<p>ประโยคเปลี่ยนหัวข้อ: <span class="q">&ldquo;ส่วนที่ผ่านมาคือสิ่งที่ควรแก้ในปีนี้ ส่วนต่อไปคือสิ่งที่ต้องเริ่มวางแผนวันนี้ แต่จะเสร็จในอีกหลายปี&rdquo;</span></p>
+<p>อธิบาย HNDL ให้สั้นและเห็นภาพ: <span class="q">&ldquo;คนโจมตีไม่จำเป็นต้องถอดรหัสได้วันนี้ เขาแค่บันทึก traffic ที่เข้ารหัสไว้ แล้วรอจนควอนตัมคอมพิวเตอร์พร้อม ค่อยถอดย้อนหลัง — ข้อมูลที่ต้องเป็นความลับนานหลายปีคือส่วนที่ได้รับผลกระทบ&rdquo;</span></p>
+<p>สำหรับโรงแรม/ห้างอะไรที่ต้องลับนานหลายปี: สัญญาเช่าพื้นที่ระยะยาว ข้อมูลสมาชิก ข้อมูลพนักงาน ข้อมูลการเงิน</p>
+<p>*** ต้องพูด caveat *** <span class="q">&ldquo;L0 ถึง L3 เป็นสเกลที่เราใช้ในรายงานนี้เพื่อวางแผน ไม่ใช่มาตรฐานอุตสาหกรรมหรือ certification ใด ๆ&rdquo;</span></p>
+<p>และย้ำว่า Hybrid KEM แก้แค่ชั้น key exchange — certificate ทั้ง 21 ใบยังเป็น RSA/ECDSA อยู่ ซึ่งเป็นเรื่องปกติของทุกองค์กรวันนี้ ไม่ใช่ช่องโหว่</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s24">
+  <div class="slide-head">
+    <span class="slide-num">24</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">PQC READINESS INDICATORS</p>
+      <h3>Only 3 of 26 endpoints negotiate hybrid key exchange — all inherited. </h3>
+    </div>
+    <span class="pill">⏱ 2.5 นาที</span>
+  </div>
+  <div class="notes">
+    <p>ผลการวัดจริง — 2.5 นาที</p>
+<p>ตัวเลขที่ต้องจำ: 3 จาก 26 endpoint ที่รองรับ TLS 1.3 เท่านั้นที่เจรจา PQC hybrid key exchange ได้</p>
+<p>ประเด็นสำคัญที่สุดของหน้านี้: ทั้ง 3 ตัวนั้น <span class="q">&ldquo;ไม่ได้มาจากการตั้งค่าของ LHMH&rdquo;</span> แต่มาจาก CDN/cloud provider ที่อัปเกรดให้ — CloudFront, AWS Global Accelerator, และ third-party VPS<br>แปลว่า host ที่ LHMH ดูแลเองทุกตัวจะไม่ได้ PQC มาแบบอัตโนมัติ ต้องตั้งใจทำ</p>
+<p>ข้อสังเกตที่น่าสนใจและควรพูด: www2.lhmall.co.th ซึ่งเป็น VPS ของบุคคลที่สาม กลับล้ำหน้ากว่า platform หลักของกลุ่มในเรื่อง PQC</p>
+<p>ความเข้มงวดของการวัด (พูดถ้าลูกค้าเป็นสายเทคนิค): เรารัน --full-keyshare cross-check กับทั้ง 24 endpoint ที่ได้ผล classical เพื่อตัดความเป็นไปได้ว่า middlebox รบกวนผล — ได้ NO_PQC เหมือนเดิมทุกตัว<br>และ QUIC probe เราทดสอบกับ cloudflare.com เป็น control target สำเร็จ จึงยืนยันได้ว่า <span class="q">&ldquo;ไม่มี HTTP/3&rdquo;</span> เป็นผลจริง ไม่ใช่ network ถูกบล็อก</p>
+<p>4 endpoint ที่ควรย้ายก่อน: vpn.lhmh.co.th, app.lhmh.co.th, app.gcphotels.com, apps-hk.gcphotels.com — เพราะชื่อบ่งชี้ว่าเกี่ยวกับ login/API/payment</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s25">
+  <div class="slide-head">
+    <span class="slide-num">25</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">WHY START PQC PLANNING NOW</p>
+      <h3>Data lifetime sets the migration window, not the threat date. </h3>
+    </div>
+    <span class="pill">⏱ 2.5 นาที</span>
+  </div>
+  <div class="notes">
+    <p>ตอบคำถาม <span class="q">&ldquo;ทำไมต้องเริ่มตอนนี้&rdquo;</span> — 2.5 นาที คำถามนี้จะถูกถามแน่นอน</p>
+<p>ใช้ Mosca's Inequality เป็นเครื่องมือคิด ไม่ใช่สูตรคณิตศาสตร์:<br>X = ข้อมูลของคุณต้องเป็นความลับกี่ปี<br>Y = องค์กรคุณใช้เวลากี่ปีในการเปลี่ยน crypto ทั้งระบบ<br>Z = อีกกี่ปีกว่าควอนตัมคอมพิวเตอร์จะพร้อม<br>ถ้า X + Y &gt; Z แปลว่าคุณสายไปแล้ว</p>
+<p>ถามลูกค้ากลับในห้อง: <span class="q">&ldquo;สัญญาเช่าพื้นที่ระยะยาวของห้าง เก็บเป็นความลับกี่ปีครับ&rdquo;</span> ถ้าตอบ 10-15 ปี ก็ชัดเจนว่า X ใหญ่มาก</p>
+<p>ตัวเลขอ้างอิงที่ต้องพูดพร้อมแหล่งที่มา:<br>- NIST ประกาศ FIPS 203/204/205 เป็นมาตรฐานสมบูรณ์เมื่อสิงหาคม 2024 — ไม่ใช่ draft แล้ว<br>- หน่วยงานรัฐบาลสหรัฐตั้งเป้าปี 2030/2035 ซึ่งกลายเป็น de facto benchmark ที่ vendor และ auditor ใช้อ้าง</p>
+<p>*** ต้องระวัง *** ห้ามระบุปีที่ควอนตัมคอมพิวเตอร์จะแตก RSA เพราะยังไม่มีใครรู้ ให้พูดว่า <span class="q">&ldquo;ไม่มีวันที่ยืนยันได้ ซึ่งนั่นแหละคือเหตุผลที่ต้องวางแผนล่วงหน้า&rdquo;</span></p>
+<p>ปิดท้าย: ขั้นแรกไม่ใช่การเปลี่ยน crypto แต่คือการทำ inventory ว่ามี crypto อะไรอยู่ที่ไหนบ้าง — ซึ่งรายงานนี้เริ่มให้แล้ว 21 certificate</p>
+  </div>
+</section>
+
+</div>
+<div class="section-group" id="grp-rust-26">
+<h2 class="section-title rust">Closing &amp; next steps</h2>
+
+<section class="slide-card" id="s26">
+  <div class="slide-head">
+    <span class="slide-num">26</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">PRIORITIZED ACTION PLAN</p>
+      <h3>Confirm ownership first; everything else sequences behind it. </h3>
+    </div>
+    <span class="pill">⏱ 3-4 นาที</span>
+  </div>
+  <div class="notes">
+    <p>แผนปฏิบัติ 30/60/90 — 3-4 นาที หน้านี้รวมเนื้อหาที่เคยแยกเป็น 2 หน้าไว้ในหน้าเดียว</p>
+<p>วิธีเดินหน้านี้: อย่าอ่านทุก bullet ให้เดินตามโครงสร้างย่อยในคอลัมน์แรกก่อน</p>
+<p>คอลัมน์ Now/30 แบ่งเป็น 2 ชั้นในตัว:<br>ชั้นบน <span class="q">&ldquo;Confirm ownership first&rdquo;</span> = ต้องมีคนตัดสินใจ ไม่ใช่ปัญหาเทคนิค (3 ข้อ: 15 console บน 49.231.128.108, สถานะ dev/UAT cluster, และ F-02 lhmall.co.th — เพิ่งอัปเดตว่ายังเป็นของ LHMH จริง แค่ต้องตัดสินใจว่าจะ redirect หรือ reactivate)<br>ชั้นล่าง <span class="q">&ldquo;Then execute&rdquo;</span> = ทำได้ทันทีไม่ต้องรออนุมัติ (DMARC, cert, HTTPS-only, cookies, cert inventory)</p>
+<p>พูดเชื่อมสองชั้นนี้ว่า: <span class="q">&ldquo;สามข้อบนคือสิ่งที่ต้องการแค่คนตัดสินใจ ไม่ใช่งบหรือเครื่องมือ ส่วนข้อล่างทีม IT เริ่มทำเองได้เลยพรุ่งนี้ ไม่ต้องรอผลจากข้อบน&rdquo;</span></p>
+<p>คอลัมน์ Next/60 และ Sustain/90 เหมือนเดิม — เป็นงานที่ทยอยทำต่อเนื่องหลัง 30 วันแรก โดย Sustain/90 เพิ่มบรรทัดแนะนำ MFA แบบภาพรวมทั้งองค์กรไว้ท้ายคอลัมน์ — ต่างจาก MFA ที่พูดถึงใน F-07/F-09 ซึ่งเจาะจงแค่ 15 console เท่านั้น พูดสั้น ๆ ว่า <span class="q">&ldquo;ในระยะยาว แนะนำให้ขยาย MFA ให้ครอบคลุมทุก account ที่มีสิทธิ์ผู้ดูแลระบบ ไม่ใช่แค่กลุ่มที่เจอในรายงานนี้&rdquo;</span></p>
+<p>กล่องปิดท้ายรวมประเด็นเรื่อง <span class="q">&ldquo;ใครพึ่งใคร&rdquo;</span> ไว้ด้วยแล้ว (เดิมเคยเป็นสไลด์แยก) ให้พูดว่า:<br><span class="q">&ldquo;ห้าในสิบสี่ข้อทำได้ทันทีไม่ต้องรอใคร สามข้อรอการตัดสินใจ (รวม F-02 ที่เพิ่งยืนยันว่ายังเป็นของเราเอง) และหลังตัดสินใจแล้วบางข้อยังต้องรอ vendor ต่ออีกที — ควรเริ่มคุยกับ Netway พร้อมกันเลย ไม่ต้องรอให้ข้ออื่นเสร็จก่อน&rdquo;</span></p>
+<p>ปิดด้วยคำถามเดียว: ใครจะเป็นคนตัดสินใจสามข้อบนสุด</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s27">
+  <div class="slide-head">
+    <span class="slide-num">27</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">NEXT STEPS</p>
+      <h3>Close the ownership questions first; everything else follows. </h3>
+    </div>
+    <span class="pill">⏱ 3 นาที</span>
+  </div>
+  <div class="notes">
+    <p>ปิดการนำเสนอ — 3 นาที เป็นหน้าที่มี commercial intent ให้พูดอย่างสุภาพ ไม่ขายแรง</p>
+<p>เปิดด้วยการทวนว่า <span class="q">&ldquo;รายงานนี้เป็น complimentary ไม่มีเงื่อนไขผูกพัน สิ่งที่เสนอต่อจากนี้คือทางเลือก 5 อย่าง ไม่ต้องเลือกวันนี้ทั้งหมด&rdquo;</span></p>
+<p>ไล่ทีละข้อ (แถวบน 3 ข้อก่อน แถวล่าง 2 ข้อ):<br>1. Validation workshop — 2 ชั่วโมง เอา 14 finding มานั่งไล่กับเจ้าของระบบ ปิดคำถาม ownership ให้จบ อันนี้ควรทำก่อนอย่างอื่นและไม่มีค่าใช้จ่าย<br>2. Continuous EASM/CTEM — จุดขายอยู่ที่ F-08 เราหา host กลุ่มนั้นไม่เจอจาก enumeration รอบนี้เอง snapshot ครั้งเดียวไม่พอ<br>3. Crypto inventory / CBOM — 21 certificate ที่เราเจอเป็นแค่ฝั่ง external ยังมีฝั่ง internal อีกมาก และเป็น input ที่จำเป็นก่อนวางแผน PQC<br>4. Vendor risk — ช่วย LHMH คุยกับ Netway และ VPS provider อย่างมีโครงสร้าง<br>5. PAM assessment — ข้อใหม่ เชื่อมกับ F-09 ที่มี 10 console บน host เดียว ไม่มี credential vaulting หรือ session recording เลย และ environment ของ LHMH ใช้ผู้ให้บริการหลายเจ้า (8 third-party providers) ตรงกับสถานการณ์ classic ที่ PAM ถูกออกแบบมาแก้ — ต้องพูดให้ชัดว่านี่คือข้อเสนอบริการ ไม่ใช่ finding ที่ตรวจแล้ว เพราะรายงานนี้ไม่มี methodology ประเมิน identity/PAM โดยตรง</p>
+<p>เชื่อมกับสไลด์ก่อนหน้า (Action Plan): <span class="q">&ldquo;ในแผนที่ผ่านมาเราแนะนำให้ขยาย MFA และมอง SSO ไว้แล้ว ข้อ 5 นี้คือขั้นถัดไปหลังจากนั้น — MFA ตอบว่า login เข้ามาได้ไหม ส่วน PAM ตอบว่าหลัง login แล้วทำอะไรได้บ้างและมีคนเห็นไหม เป็นคนละชั้นกัน ไม่ซ้ำกัน&rdquo;</span></p>
+<p>ปิดท้ายด้วยคำถามเดียวเหมือนเดิม: <span class="q">&ldquo;วันนี้เราได้ชื่อผู้รับผิดชอบสำหรับ F-07/F-08/F-09 ไหมครับ&rdquo;</span> — จบด้วยคำถาม ไม่ใช่จบด้วยการขาย</p>
+<p>OUTCOME ของหน้านี้: ผู้ฟังเข้าใจว่ามีทางเลือกบริการเสริม 5 อย่างที่ไม่บังคับ และสิ่งที่ต้องได้คำตอบวันนี้จริง ๆ มีแค่ 1 อย่างคือชื่อผู้รับผิดชอบเรื่อง ownership — ส่วนอีก 4 ข้อ (รวม PAM) ให้ลูกค้ากลับไปพิจารณาได้ ไม่ต้องปิดการขายในห้องประชุมนี้</p>
+  </div>
+</section>
+
+</div>
+<div class="section-group" id="grp-mut-28">
+<h2 class="section-title mut">Appendix (reference only)</h2>
+
+<section class="slide-card" id="s28">
+  <div class="slide-head">
+    <span class="slide-num">28</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">APPENDIX — SUGGESTED ROUTING</p>
+      <h3>Grouped by function, to speed up follow-up. </h3>
+    </div>
+    <span class="pill">⏱ 1.5 นาที</span>
+  </div>
+  <div class="notes">
+    <p>Appendix — เปิดเฉพาะเมื่อถูกถามว่า <span class="q">&ldquo;แล้วใครทำ&rdquo;</span> — 1.5 นาที</p>
+<p>*** วิธีเปิดหน้านี้สำคัญมาก ***<br>พูดว่า: <span class="q">&ldquo;หน้านี้เป็นการจัดกลุ่มตามหน้าที่ ไม่ใช่การระบุตัวบุคคล และไม่ใช่การชี้ว่าใครทำพลาดนะครับ จุดประสงค์คือช่วยให้ส่งงานถึงคนที่แก้ได้เร็วขึ้นเท่านั้น&rdquo;</span></p>
+<p>ถ้าลูกค้าไม่ถามเรื่องนี้ ให้ข้ามไปเลย ไม่ต้องเปิด — บางองค์กรจะรู้สึกอึดอัดถ้าถูกจัดกลุ่มความรับผิดชอบต่อหน้าคนอื่น</p>
+<p>ถ้าเปิดแล้ว ให้เน้นว่าหลายข้ออยู่ใน <span class="q">&ldquo;External vendor&rdquo;</span> ซึ่งแปลว่าไม่ใช่งานของทีมภายในเลย</p>
+<p>ประเด็นที่มีประโยชน์จริง: ตารางนี้แสดงว่าต้องประสาน 5 กลุ่มหน้าที่ ซึ่งอธิบายว่าทำไมปัญหาถึงสะสม — ไม่มีใครเห็นภาพรวมทั้งหมด</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s29">
+  <div class="slide-head">
+    <span class="slide-num">29</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">APPENDIX — HOW THIS WORKS</p>
+      <h3>Why a missing DMARC record lets the domain be spoofed </h3>
+    </div>
+    <span class="pill">⏱ 1 นาที</span>
+  </div>
+  <div class="notes">
+    <p>Appendix — ใช้ประกอบ F-01 เมื่อถูกถามว่า <span class="q">&ldquo;SPF กับ DKIM ก็มีแล้ว ทำไมยังไม่พอ&rdquo;</span> — 1 นาที</p>
+<p>อธิบายตามภาพ:<br>- SPF ตรวจ envelope sender (MAIL FROM) ซึ่งผู้รับไม่เห็น<br>- DKIM ตรวจว่าเนื้อหาไม่ถูกแก้ระหว่างทาง ผูกกับ d= domain ซึ่งผู้รับก็ไม่เห็น<br>- สิ่งที่ผู้ใช้เห็นจริงใน Outlook หรือ Gmail คือ From: เท่านั้น</p>
+<p>ประโยคสำคัญ: <span class="q">&ldquo;คนโจมตีสามารถส่งเมลจากโดเมนของตัวเอง ผ่าน SPF และ DKIM ได้ครบถ้วนสมบูรณ์ แล้วตั้ง From: เป็นชื่อของ LHMH ได้เลย&rdquo;</span></p>
+<p>DMARC คือสิ่งที่บังคับให้โดเมนที่ผ่าน SPF/DKIM ต้องตรงกับ From: ที่ผู้ใช้เห็น (alignment) และบอกผู้รับว่าให้ทำอย่างไรถ้าไม่ตรง (policy)</p>
+<p>เมื่อไม่มี DMARC ผู้ให้บริการปลายทางแต่ละรายตัดสินใจเอง และส่วนใหญ่จะส่งเมลปลอมนั้นเข้ากล่องจดหมาย</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s30">
+  <div class="slide-head">
+    <span class="slide-num">30</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">APPENDIX — HOW THIS WORKS</p>
+      <h3>Why traffic recorded today still matters years from now </h3>
+    </div>
+    <span class="pill">⏱ 1 นาที</span>
+  </div>
+  <div class="notes">
+    <p>Appendix — ใช้ประกอบส่วน PQC เมื่อถูกถามว่า <span class="q">&ldquo;ควอนตัมยังไม่มี แล้วจะรีบทำไม&rdquo;</span> — 1 นาที</p>
+<p>อธิบายตามภาพ:<br>- วันนี้ traffic ถูกเข้ารหัสด้วย classical key exchange<br>- คนโจมตีไม่ต้องถอดรหัสตอนนี้ แค่บันทึกเก็บไว้ ซึ่งต้นทุนต่ำมาก<br>- เมื่อควอนตัมคอมพิวเตอร์พร้อม เขาย้อนกลับมาถอดรหัสข้อมูลที่บันทึกไว้เมื่อหลายปีก่อน</p>
+<p>ประโยคปิด: <span class="q">&ldquo;แปลว่าการตัดสินใจว่าจะเข้ารหัสแบบไหนวันนี้ กำหนดว่าข้อมูลของวันนี้จะปลอดภัยในอีกสิบปีข้างหน้าหรือไม่ — ไม่ใช่การตัดสินใจที่เลื่อนไปทำทีหลังได้&rdquo;</span></p>
+<p>เชื่อมกลับตัวเลขของ LHMH: 29 จาก 32 endpoint อยู่ในสถานะนี้</p>
+  </div>
+</section>
+
+
+<section class="slide-card" id="s31">
+  <div class="slide-head">
+    <span class="slide-num">31</span>
+    <div class="slide-head-text">
+      <p class="eyebrow">APPENDIX — EVIDENCE BASIS</p>
+      <h3>What was used, and what could not be reached this cycle. </h3>
+    </div>
+    <span class="pill">⏱ 1.5 นาที</span>
+  </div>
+  <div class="notes">
+    <p>Appendix — เปิดเมื่อถูกถามเรื่องความน่าเชื่อถือของข้อมูล — 1.5 นาที</p>
+<p>จุดที่ควรพูดถ้าลูกค้าเป็นสายเทคนิคหรือสาย audit:<br><span class="q">&ldquo;เราบันทึกทั้งแหล่งที่ใช้ได้และแหล่งที่ใช้ไม่ได้ในรอบนี้ เพื่อให้เห็นขอบเขตความครอบคลุมอย่างตรงไปตรงมา&rdquo;</span></p>
+<p>Coverage gap ที่ต้องยอมรับตรง ๆ 4 อย่าง:<br>1. crt.sh ล่ม (HTTP 502 ทั้ง 5 โดเมน ลอง 3 ครั้ง) จึงใช้ CertSpotter แทน<br>2. Censys และ Shodan แบบ authenticated ไม่มี API key รอบนี้ ใช้ได้แค่ InternetDB<br>3. Wayback Machine ถูกบล็อกโดย egress policy ของ sandbox เอง ไม่ใช่ฝั่งเป้าหมาย<br>4. terminal21.co.th ใช้ wildcard certificate ทำให้ subdomain ไม่ปรากฏใน CT log — เป็น structural blind spot และเป็นสาเหตุที่ F-08 หาไม่เจอในรอบนี้</p>
+<p>การยอมรับ gap เองแบบนี้ทำให้รายงานน่าเชื่อถือขึ้น ไม่ใช่ลดลง — ใช้เป็นจุดขายของความเป็นมืออาชีพได้</p>
+  </div>
+</section>
+
+</div>
+
+    <footer>
+      <span>LH Mall &amp; Hotel Co., Ltd. — Restricted</span>
+      <span>Companion to LHMH_Exposure_Presentation_v1.pptx (31 slides)</span>
+    </footer>
+  </main>
+
+</div>
+</body>
+</html>
